@@ -11,7 +11,7 @@ omg-cli/omg-linux register-plugin \
   -pluginpath omg-cli-product-bundle/$PRODUCT_PLUGIN
 
 omg-cli/omg-linux deploy-product \
-  omg-cli-product-bundle/$PRODUCT_PLUGIN
+  $PRODUCT_PLUGIN
   --infer-from-cloud \
   --print-manifest \
   --vault-active \
