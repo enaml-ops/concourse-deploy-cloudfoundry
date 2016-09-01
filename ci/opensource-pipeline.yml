@@ -1,0 +1,177 @@
+groups: []
+
+resources:
+- name: cf-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/cf-release
+- name: concourse-deploy-cloudfoundry
+  type: git
+  source:
+    uri: https://github.com/enaml-ops/concourse-deploy-cloudfoundry
+    branch: master
+- name: omg-cli
+  type: github-release
+  source:
+    user: enaml-ops
+    repository: omg-cli
+- name: omg-cli-product-bundle
+  type: github-release
+  source:
+    user: enaml-ops
+    repository: omg-product-bundle
+- name: pipeline-tasks
+  type: git
+  source:
+    uri: https://github.com/18f/cg-pipeline-tasks.git
+    branch: master
+- name: {{deployment-name}}
+  type: bosh-deployment
+  source:
+    target: {{bosh-target}}
+    username: {{bosh-username}}
+    password: {{bosh-password}}
+    deployment: {{deployment-name}}
+- name: slack
+  type: slack-notification
+  source:
+    url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
+- name: stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-aws-xen-ubuntu-trusty-go_agent
+
+resource_types:
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+
+jobs:
+- name: deploy
+  plan:
+    - get: cf-release
+    - get: concourse-deploy-cloudfoundry
+    - get: omg-cli
+    - get: omg-cli-product-bundle
+      trigger: true
+    - get: stemcell
+    - task: generate-manifest
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/generate-manifest.sh
+        params:
+          CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
+          PRODUCT_PLUGIN: {{product_plugin}}
+          VAULT_DOMAIN: {{vault_domain}}
+          VAULT_HASH_HOST: {{vault_hash_host}}
+          VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
+          VAULT_HASH_PASSWORD: {{vault_hash_password}}
+          VAULT_HASH_TOKEN: {{vault_token}}
+        inputs:
+        - name: omg-cli
+        - name: omg-cli-product-bundle
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+        - name: manifest
+          path: ""
+    - put: {{deployment-name}}
+      params:
+        manifest: manifest/deployment.yml
+        stemcells:
+        - stemcell/*.tgz
+        releases:
+        - cf-release/*.tgz
+      on_success:
+        put: slack
+        params:
+          text: |
+            :white_check_mark: Successfully deployed {{deployment-name}} CF
+            <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          channel: {{slack-channel}}
+          username: {{slack-username}}
+          icon_url: {{slack-icon-url}}
+      on_failure:
+        put: slack
+        params:
+          text: |
+            :x: FAILED to deploy {{deployment-name}} CF
+            <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          channel: {{slack-channel}}
+          username: {{slack-username}}
+          icon_url: {{slack-icon-url}}
+- name: run-smoke-tests
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [deploy]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-username}}
+      BOSH_PASSWORD: {{bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: smoke_tests
+      BOSH_CACERT: {{bosh-cacert}}
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Smoke tests for {{deployment-name}} CF passed
+          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: Smoke tests for {{deployment-name}} CF failed
+          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+- name: run-acceptance-tests
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-username}}
+      BOSH_PASSWORD: {{bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: smoke_tests
+      BOSH_CACERT: {{bosh-cacert}}
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Acceptance tests for {{deployment-name}} CF passed
+          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: Acceptance tests for {{deployment-name}} CF failed
+          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}

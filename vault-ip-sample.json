@@ -1,0 +1,17 @@
+{
+  "consul-ip": "10.0.0.23",
+  "diego-brain-ip": "10.0.0.26",
+  "diego-cell-ip": "10.0.0.1,10.0.0.2,10.0.0.3",
+  "diego-db-ip": "10.0.1.1",
+  "doppler-ip": "10.0.0.27",
+  "etcd-machine-ip": "10.0.0.25",
+  "haproxy-ip": "10.0.0.2", 
+  "loggregator-traffic-controller-ip": "10.0.0.28",
+  "mysql-ip": "10.0.0.29", 
+  "mysql-proxy-external-host": "10.0.0.1",
+  "mysql-proxy-ip": "10.0.0.30",
+  "nats-machine-ip": "10.0.0.24", 
+  "nfs-ip": "10.0.0.31",
+  "nfs-server-address":"10.0.0.40",
+  "router-ip": "10.0.0.20,10.0.0.21,10.0.0.22", 
+}
