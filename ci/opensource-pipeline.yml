@@ -3,25 +3,59 @@ groups: []
 resources:
 - name: cf-release
   type: bosh-io-release
+  check_every: 1h
   source:
     repository: cloudfoundry/cf-release
+- name: garden-release
+  type: bosh-io-release
+  check_every: 1h
+  source:
+    repository: cloudfoundry/garden-linux-release
+- name: diego-release
+  type: bosh-io-release
+  check_every: 1h
+  source:
+    repository: cloudfoundry/diego-release
+- name: etcd-release
+  type: bosh-io-release
+  check_every: 1h
+  source:
+    repository: cloudfoundry-incubator/etcd-release
+- name: cf-mysql-release
+  type: bosh-io-release
+  check_every: 1h
+  source:
+    repository: cloudfoundry/cf-mysql-release
+- name: cflinuxfs2-release
+  type: bosh-io-release
+  check_every: 1h
+  source:
+    repository: cloudfoundry/cflinuxfs2-rootfs-release
+- name: stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-aws-xen-ubuntu-trusty-go_agent
 - name: concourse-deploy-cloudfoundry
   type: git
+  check_every: 1h
   source:
     uri: https://github.com/enaml-ops/concourse-deploy-cloudfoundry
     branch: master
 - name: omg-cli
   type: github-release
+  check_every: 1h
   source:
     user: enaml-ops
     repository: omg-cli
 - name: omg-cli-product-bundle
   type: github-release
+  check_every: 1h
   source:
     user: enaml-ops
     repository: omg-product-bundle
 - name: pipeline-tasks
   type: git
+  check_every: 1h
   source:
     uri: https://github.com/18f/cg-pipeline-tasks.git
     branch: master
@@ -36,10 +70,6 @@ resources:
   type: slack-notification
   source:
     url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
-- name: stemcell
-  type: bosh-io-stemcell
-  source:
-    name: bosh-aws-xen-ubuntu-trusty-go_agent
 
 resource_types:
 - name: slack-notification
@@ -51,9 +81,18 @@ jobs:
 - name: deploy
   plan:
     - get: cf-release
+    - get: garden-release
+    - get: diego-release
+    - get: etcd-release
+    - get: cf-mysql-release
+    - get: cflinuxfs2-release
+    - get: stemcell
     - get: concourse-deploy-cloudfoundry
     - get: omg-cli
     - get: omg-cli-product-bundle
+      params:
+        globs:
+        - cloudfoundry-plugin-*
       trigger: true
     - get: stemcell
     - task: generate-manifest
@@ -69,14 +108,22 @@ jobs:
           CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
           PRODUCT_PLUGIN: {{product_plugin}}
           VAULT_DOMAIN: {{vault_domain}}
+          VAULT_HASH_IP: {{vault_hash_ip}}
           VAULT_HASH_HOST: {{vault_hash_host}}
           VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
           VAULT_HASH_PASSWORD: {{vault_hash_password}}
-          VAULT_HASH_TOKEN: {{vault_token}}
+          VAULT_TOKEN: {{vault_token}}
         inputs:
+        - name: cf-release
+        - name: garden-release
+        - name: diego-release
+        - name: etcd-release
+        - name: cf-mysql-release
+        - name: cflinuxfs2-release
+        - name: stemcell
+        - name: concourse-deploy-cloudfoundry
         - name: omg-cli
         - name: omg-cli-product-bundle
-        - name: concourse-deploy-cloudfoundry
         outputs:
         - name: manifest
           path: ""
@@ -87,6 +134,11 @@ jobs:
         - stemcell/*.tgz
         releases:
         - cf-release/*.tgz
+        - garden-release/*.tgz
+        - diego-release/*.tgz
+        - etcd-release/*.tgz
+        - cf-mysql-release/*.tgz
+        - cflinuxfs2-release/*.tgz
       on_success:
         put: slack
         params:

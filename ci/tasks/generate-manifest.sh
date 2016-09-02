@@ -12,6 +12,13 @@ omg-cli/omg-linux register-plugin \
 
 omg-cli/omg-linux deploy-product \
   $PRODUCT_PLUGIN
+  --cf-release-version $(<cf-release/version)
+  --garden-release-version $(<garden-release/version)
+  --diego-release-version $(<diego-release/version)
+  --etcd-release-version $(<etcd-release/version)
+  --cf-mysql-release-version $(<cf-mysql-release/version)
+  --cflinuxfs2-release-version $(<cflinuxfs2-release/version)
+  --stemcell-version $(<stemcell/version)
   --infer-from-cloud \
   --print-manifest \
   --vault-active \
