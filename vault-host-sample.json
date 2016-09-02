@@ -1,4 +1,8 @@
 {
+  "bosh-cacert": "",
+  "bosh-pass": "PASSWORD",
+  "bosh-target": "https://10.0.0.10",
+  "bosh-user": "admin",
   "consul-ip": "10.0.0.23",
   "diego-brain-ip": "10.0.0.26",
   "diego-cell-ip": "10.0.0.1,10.0.0.2,10.0.0.3",

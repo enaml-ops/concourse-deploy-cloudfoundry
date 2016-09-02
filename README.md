@@ -16,34 +16,34 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     git clone https://github.com/enaml-ops/concourse-deploy-cloudfoundry.git
     ```
 
-1. Copy the sample config file `vault-host-sample.json`.
+1. Copy the sample config file `vault-hostvars-sample.json`.
 
     ```
     cd concourse-deploy-cloudfoundry
-    cp vault-host-sample.json vault-host.json
+    cp vault-hostvars-sample.json vault-hostvars.json
     ```
 
-1. Edit `vault-host.json`, adding the appropriate values.
+1. Edit `vault-hostvars.json`, adding the appropriate values.
 
     ```
-    $EDITOR vault-host.json
+    $EDITOR vault-hostvars.json
     ```
 
-    All available keys can be listed by querying the plugin.  If not specified in `vault-host.json`, default values will be used where possible.
+    All available keys can be listed by querying the plugin.  If not specified in `vault-hostvars.json`, default values will be used where possible.
 
     ```
     omg-linux deploy-product cloudfoundry-plugin-linux --help
     ```
 
-1. Load the key/value pairs into `vault`:
+1. Load your deployment k/v pairs into `vault`.  `VAULT_HASH` here and `vault_hash_hostvars` in `credentials.yml` must match.
 
     ```
     VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
-    VAULT_HASH=secret/cf-staging-ips
-    vault write ${VAULT_HASH} @vault-host.json
+    VAULT_HASH=secret/cf-staging-hostvars
+    vault write ${VAULT_HASH} @vault-hostvars.json
     ```
 
-1. Delete or move `vault-host.json` to a secure location.
+1. Delete or move `vault-hostvars.json` to a secure location.
 1. Copy the credentials template.
 
     ```
