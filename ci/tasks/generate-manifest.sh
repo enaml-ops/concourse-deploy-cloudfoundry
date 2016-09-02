@@ -15,7 +15,8 @@ omg-cli/omg-linux deploy-product \
   --bosh-port $(vault read --field=bosh-port $VAULT_HASH_HOSTVARS) \
   --bosh-user $(vault read --field=bosh-user $VAULT_HASH_HOSTVARS) \
   --bosh-pass $(vault read --field=bosh-pass $VAULT_HASH_HOSTVARS) \
-  --ssl-ignore \ 
+  --print-manifest \
+  --ssl-ignore \
   $PRODUCT_PLUGIN \
   --cf-release-version $(<cf-release/version) \
   --garden-release-version $(<garden-release/version) \
@@ -25,7 +26,6 @@ omg-cli/omg-linux deploy-product \
   --cflinuxfs2-release-version $(<cflinuxfs2-release/version) \
   --stemcell-version $(<stemcell/version) \
   --infer-from-cloud \
-  --print-manifest \
   --vault-active \
   --vault-domain $VAULT_ADDR \
   --vault-hash-host $VAULT_HASH_HOSTVARS \
