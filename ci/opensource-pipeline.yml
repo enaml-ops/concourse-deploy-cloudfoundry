@@ -129,6 +129,7 @@ jobs:
           path: ""
     - put: {{deployment-name}}
       params:
+        deployment: cf
         manifest: manifest/deployment.yml
         stemcells:
         - stemcell/*.tgz
