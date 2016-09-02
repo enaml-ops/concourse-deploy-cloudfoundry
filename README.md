@@ -16,20 +16,20 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     git clone https://github.com/enaml-ops/concourse-deploy-cloudfoundry.git
     ```
 
-1. Copy the sample config file `vault-ip-sample.json`.
+1. Copy the sample config file `vault-host-sample.json`.
 
     ```
     cd concourse-deploy-cloudfoundry
-    cp vault-ip-sample.json vault-ip.json
+    cp vault-host-sample.json vault-host.json
     ```
 
-1. Edit `vault-ip.json`, adding the appropriate values.
+1. Edit `vault-host.json`, adding the appropriate values.
 
     ```
-    $EDITOR vault-ip.json
+    $EDITOR vault-host.json
     ```
 
-    All available keys can be listed by querying the plugin.  If not specified in `vault-ip.json`, default values will be used where possible.
+    All available keys can be listed by querying the plugin.  If not specified in `vault-host.json`, default values will be used where possible.
 
     ```
     omg-linux deploy-product cloudfoundry-plugin-linux --help
@@ -40,10 +40,10 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     ```
     VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
     VAULT_HASH=secret/cf-staging-ips
-    vault write ${VAULT_HASH} @vault-ip.json
+    vault write ${VAULT_HASH} @vault-host.json
     ```
 
-1. Delete or move `vault-ip.json` to a secure location.
+1. Delete or move `vault-host.json` to a secure location.
 1. Copy the credentials template.
 
     ```
