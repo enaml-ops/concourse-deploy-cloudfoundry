@@ -11,6 +11,11 @@ omg-cli/omg-linux register-plugin \
   -pluginpath omg-cli-product-bundle/$PRODUCT_PLUGIN
 
 omg-cli/omg-linux deploy-product \
+  --bosh-url $(vault read --field=bosh-url secret/configs) \
+  --bosh-port $(vault read --field=bosh-port secret/configs) \
+  --bosh-user $(vault read --field=bosh-user secret/configs) \
+  --bosh-pass $(vault read --field=bosh-pass secret/configs) \
+  --ssl-ignore \ 
   $PRODUCT_PLUGIN
   --cf-release-version $(<cf-release/version)
   --garden-release-version $(<garden-release/version)
@@ -22,7 +27,7 @@ omg-cli/omg-linux deploy-product \
   --infer-from-cloud \
   --print-manifest \
   --vault-active \
-  --vault-domain $VAULT_DOMAIN \
+  --vault-domain $VAULT_ADDR \
   --vault-hash-host $VAULT_HASH_HOST \
   --vault-hash-ip $VAULT_HASH_IP \
   --vault-hash-keycert $VAULT_HASH_KEYCERT \
