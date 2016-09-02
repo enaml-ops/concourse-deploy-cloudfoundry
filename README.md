@@ -58,10 +58,16 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 
     Note: If you are deploying Pivotal CF (PCF), you must add your `API Token` found at the bottom of your [Pivotal Profile](https://network.pivotal.io/users/dashboard/edit-profile) page.
 
-1. Create or update the pipeline.
+1. Create or update the pipeline, either opensource or PCF.
 
     ```
-    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/deploy-cloudfoundry.yml -l vault-ip.json
+    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/opensource-pipeline.yml -l credentials.yml
+    ```
+
+    _or_
+
+    ```
+    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/pcf-pipeline.yml -l credentials.yml
     ```
 
 1. Delete or move `credentials.yml` to a secure location.
