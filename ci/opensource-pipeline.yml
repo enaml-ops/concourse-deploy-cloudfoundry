@@ -63,9 +63,10 @@ resources:
   type: bosh-deployment
   source:
     target: {{bosh-target}}
-    username: {{bosh-user}}
-    password: {{bosh-pass}}
-    deployment: {{deployment-name}}
+    client_id: {{bosh-user}}
+    client_secret: {{bosh-pass}}
+    deployment: cf
+    ca_cert: {{bosh-cacert}}
 - name: slack
   type: slack-notification
   source:
@@ -129,7 +130,6 @@ jobs:
           path: ""
     - put: {{deployment-name}}
       params:
-        deployment: cf
         manifest: manifest/deployment.yml
         stemcells:
         - stemcell/*.tgz
