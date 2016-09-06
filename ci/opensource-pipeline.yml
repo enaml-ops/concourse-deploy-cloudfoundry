@@ -108,6 +108,7 @@ jobs:
         params:
           BOSH_CLIENT: {{bosh-user}}
           BOSH_CLIENT_SECRET: {{bosh-pass}}
+          BOSH_CACERT: {{bosh-cacert}}
           CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
           PRODUCT_PLUGIN: {{product_plugin}}
           VAULT_ADDR: {{vault_addr}}
