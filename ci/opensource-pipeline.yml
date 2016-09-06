@@ -34,7 +34,7 @@ resources:
 - name: stemcell
   type: bosh-io-stemcell
   source:
-    name: bosh-aws-xen-ubuntu-trusty-go_agent
+    name: {{stemcell}}
 - name: concourse-deploy-cloudfoundry
   type: git
   check_every: 1h
