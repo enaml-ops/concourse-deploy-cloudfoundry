@@ -62,11 +62,11 @@ resources:
 - name: {{deployment-name}}
   type: bosh-deployment
   source:
-    target: {{bosh-target}}
-    client_id: {{bosh-user}}
-    client_secret: {{bosh-pass}}
-    deployment: cf
     ca_cert: {{bosh-cacert}}
+    client_id: {{bosh-client-id}}
+    client_secret: {{bosh-client-secret}}
+    deployment: cf
+    target: {{bosh-target}}
 - name: slack
   type: slack-notification
   source:

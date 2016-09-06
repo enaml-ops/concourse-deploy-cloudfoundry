@@ -1,4 +1,6 @@
 {
+  "bosh-client-id": "",
+  "bosh-client-secret": "",
   "bosh-cacert": "",
   "bosh-pass": "PASSWORD",
   "bosh-target": "https://10.0.0.10",
