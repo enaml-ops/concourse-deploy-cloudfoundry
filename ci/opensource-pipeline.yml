@@ -106,6 +106,8 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/generate-manifest.sh
         params:
+          BOSH_CLIENT: {{bosh-user}}
+          BOSH_CLIENT_SECRET: {{bosh-pass}}
           CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
           PRODUCT_PLUGIN: {{product_plugin}}
           VAULT_ADDR: {{vault_addr}}
