@@ -127,7 +127,7 @@ jobs:
           params:
             PRODUCT: elastic-runtime
             PRODUCT_NAME: "PCF Elastic Runtime"
-            VERSION: latest
+            VERSION: from-omg-plugin
             PIVNET_API_TOKEN: {{pivnet_api_token}}
             OUTPUT_DIR: elastic-runtime
         inputs:

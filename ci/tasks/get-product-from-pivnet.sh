@@ -5,11 +5,6 @@ if [[ -z $PRODUCT ]] ; then
   exit 1
 fi
 
-if [[ -z $VERSION ]] ; then
-  printf "ERROR: \$VERSION not defined\n"
-  exit 1
-fi
-
 if [[ -z $PIVNET_API_TOKEN ]] ; then
   printf "ERROR: \$PIVNET_API_TOKEN not defined\n"
   exit 1
@@ -18,6 +13,12 @@ fi
 if [[ -z $OUTPUT_DIR ]] ; then
   printf "ERROR: \$OUTPUT_DIR not defined\n"
   exit 1
+fi
+
+# If "latest" or specific version is specified, use it.  Otherwise,
+# read the version from the omg product plugin.
+if [[ $VERSION == "from-omg-plugin" ]] ; then
+  VERSION=$(<versions/version)
 fi
 
 # Determine latest version
