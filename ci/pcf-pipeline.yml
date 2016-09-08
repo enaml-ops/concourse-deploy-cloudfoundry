@@ -163,24 +163,6 @@ jobs:
         - stemcells/stemcells*.pivotal
         releases:
         - elastic-runtime/releases/*.tgz
-      on_success:
-        put: slack
-        params:
-          text: |
-            :white_check_mark: Successfully deployed {{deployment-name}} CF
-            <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-          channel: {{slack-channel}}
-          username: {{slack-username}}
-          icon_url: {{slack-icon-url}}
-      on_failure:
-        put: slack
-        params:
-          text: |
-            :x: FAILED to deploy {{deployment-name}} CF
-            <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-          channel: {{slack-channel}}
-          username: {{slack-username}}
-          icon_url: {{slack-icon-url}}
 - name: run-smoke-tests
   plan:
   - aggregate:
@@ -198,24 +180,6 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{deployment-name}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: {{bosh-cacert}}
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Smoke tests for {{deployment-name}} CF passed
-          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: Smoke tests for {{deployment-name}} CF failed
-          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
 - name: run-acceptance-tests
   plan:
   - aggregate:
@@ -231,23 +195,124 @@ jobs:
       BOSH_USERNAME: {{bosh-user}}
       BOSH_PASSWORD: {{bosh-pass}}
       BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: smoke_tests
+      BOSH_ERRAND: acceptance_tests
       BOSH_CACERT: {{bosh-cacert}}
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Acceptance tests for {{deployment-name}} CF passed
-          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: Acceptance tests for {{deployment-name}} CF failed
-          <https://{{concourse-url}}/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+- name: push-apps-manager
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: push-apps-manager
+      BOSH_CACERT: {{bosh-cacert}}
+- name: deploy-notifications
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: deploy-notifications
+      BOSH_CACERT: {{bosh-cacert}}
+- name: test-notifications
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: test-notifications
+      BOSH_CACERT: {{bosh-cacert}}
+- name: deploy-notifications-ui
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: deploy-notifications-ui
+      BOSH_CACERT: {{bosh-cacert}}
+- name: deploy-autoscaling
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: deploy-autoscaling
+      BOSH_CACERT: {{bosh-cacert}}
+- name: register-broker
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: register-broker
+      BOSH_CACERT: {{bosh-cacert}}
+- name: test-autoscaling
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: {{deployment-name}}
+      passed: [run-smoke-tests]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{bosh-target}}
+      BOSH_USERNAME: {{bosh-user}}
+      BOSH_PASSWORD: {{bosh-pass}}
+      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+      BOSH_ERRAND: test-autoscaling
+      BOSH_CACERT: {{bosh-cacert}}
