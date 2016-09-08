@@ -160,7 +160,7 @@ jobs:
       params:
         manifest: manifest/deployment.yml
         stemcells:
-        - stemcells/releases/*.tgz
+        - stemcells/stemcells*.pivotal
         releases:
         - elastic-runtime/releases/*.tgz
       on_success:

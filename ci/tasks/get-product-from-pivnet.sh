@@ -73,7 +73,9 @@ else
   printf "MD5 matches for $PRODUCT-$PIVNET_REL_VERSION.pivotal\n"
 fi
 
-# Extract the bosh release to $OUTPUT_DIR/releases
-unzip -d $OUTPUT_DIR $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal
+if [[ $PRODUCT != "stemcells" ]]; then
+  # Extract the bosh release to $OUTPUT_DIR/releases
+  unzip -d $OUTPUT_DIR $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal
+fi
 
 #eof
