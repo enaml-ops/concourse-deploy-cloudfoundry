@@ -38,7 +38,7 @@ RELEASE_ID=$(eval $CMD)
 # Accept EULA
 CMD="curl -s https://network.pivotal.io/api/v2/products/$PRODUCT/releases | jq ' .releases[] | select(.version == \"$PIVNET_REL_VERSION\") | ._links.eula_acceptance.href '"
 EULA=$(eval $CMD | tr -d '"')
-curl -s -H "Authorization: Token $PIVNET_API_TOKEN" -X POST $EULA
+curl -s -H "Authorization: Token $PIVNET_API_TOKEN" -X POST $EULA > /dev/null
 
 # Determine product name if a stemcell
 if [[ $PRODUCT == "stemcells" ]]; then
@@ -60,7 +60,6 @@ PIVNET_SELF=$(eval $CMD | tr -d '"')
 MD5_HASH=$(curl -s $PIVNET_SELF | jq ' .product_file.md5' | tr -d '"')
 
 # Download
-printf "\nDownloading $PRODUCT $PIVNET_REL_VERSION version from $PIVNET_LINK with md5=$MD5_HASH...\n"
 curl -L -o $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal -H "Authorization: Token $PIVNET_API_TOKEN" -d "" $PIVNET_LINK
 
 # Get MD5 hash of the downloaded file
