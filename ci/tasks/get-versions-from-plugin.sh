@@ -1,12 +1,12 @@
 #!/bin/bash -e
 
 if [[ -z $PRODUCT ]] ; then
-  printf "ERROR: \$PRODUCT not defined"
+  printf "ERROR: \$PRODUCT not defined\n"
   exit 1
 fi
 
 if [[ -z $OUTPUT_DIR ]] ; then
-  printf "ERROR: \$OUTPUT_DIR not defined"
+  printf "ERROR: \$OUTPUT_DIR not defined\n"
   exit 1
 fi
 

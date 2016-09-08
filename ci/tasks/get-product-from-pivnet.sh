@@ -1,22 +1,22 @@
 #!/bin/bash -e
 
 if [[ -z $PRODUCT ]] ; then
-  printf "ERROR: \$PRODUCT not defined"
+  printf "ERROR: \$PRODUCT not defined\n"
   exit 1
 fi
 
 if [[ -z $VERSION ]] ; then
-  printf "ERROR: \$VERSION not defined"
+  printf "ERROR: \$VERSION not defined\n"
   exit 1
 fi
 
 if [[ -z $PIVNET_API_TOKEN ]] ; then
-  printf "ERROR: \$PIVNET_API_TOKEN not defined"
+  printf "ERROR: \$PIVNET_API_TOKEN not defined\n"
   exit 1
 fi
 
 if [[ -z $OUTPUT_DIR ]] ; then
-  printf "ERROR: \$OUTPUT_DIR not defined"
+  printf "ERROR: \$OUTPUT_DIR not defined\n"
   exit 1
 fi
 

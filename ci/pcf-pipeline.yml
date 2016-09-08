@@ -76,6 +76,7 @@ jobs:
           PRODUCT: elastic-runtime
           PRODUCT_PLUGIN: {{product_plugin}}
           VERSION: latest
+          OUTPUT_DIR: versions
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
@@ -104,6 +105,7 @@ jobs:
           VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
           VAULT_HASH_PASSWORD: {{vault_hash_password}}
           VAULT_TOKEN: {{vault_token}}
+          OUTPUT_DIR: manifest
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
@@ -144,34 +146,10 @@ jobs:
             VERSION: latest
             STEMCELL_CPI: vSphere
             PIVNET_API_TOKEN: {{pivnet_api_token}}
-            OUTPUT_DIR: elastic-runtime
+            OUTPUT_DIR: stemcells
         inputs:
         outputs:
         - name: stemcells
-          path: ""
-    - task: upload-ert
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: virtmerlin/deploy-worker
-        run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/upload-pcf.sh
-          params:
-            CLOUD_CONFIG_PLUGIN:  {{cloud_config_plugin}}
-            PRODUCT_PLUGIN: {{product_plugin}}
-            VAULT_ADDR: {{vault_addr}}
-            VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
-            VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
-            VAULT_HASH_PASSWORD: {{vault_hash_password}}
-            VAULT_HASH_TOKEN: {{vault_token}}
-        inputs:
-        - name: omg-cli
-        - name: omg-cli-product-bundle
-        - name: concourse-deploy-cloudfoundry
-        outputs:
-        - name: pcf-downloads
           path: ""
     - put: {{deployment-name}}
       params:
