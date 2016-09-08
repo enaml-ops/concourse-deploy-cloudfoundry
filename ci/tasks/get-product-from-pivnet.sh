@@ -38,7 +38,7 @@ RELEASE_ID=$(eval $CMD)
 # Accept EULA
 CMD="curl -s https://network.pivotal.io/api/v2/products/$PRODUCT/releases | jq ' .releases[] | select(.version == \"$PIVNET_REL_VERSION\") | ._links.eula_acceptance.href '"
 EULA=$(eval $CMD | tr -d '"')
-curl -H "Authorization: Token $PIVNET_TOKEN" -X POST $EULA
+curl -H "Authorization: Token $PIVNET_API_TOKEN" -X POST $EULA
 
 # Determine product name if a stemcell
 if [[ $PRODUCT == "stemcells" ]]; then
