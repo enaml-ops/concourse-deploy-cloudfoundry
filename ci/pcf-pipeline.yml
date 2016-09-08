@@ -131,6 +131,8 @@ jobs:
             PIVNET_API_TOKEN: {{pivnet_api_token}}
             OUTPUT_DIR: elastic-runtime
         inputs:
+        - name: concourse-deploy-cloudfoundry
+        - name: versions
         outputs:
         - name: elastic-runtime
           path: ""
@@ -150,6 +152,7 @@ jobs:
             PIVNET_API_TOKEN: {{pivnet_api_token}}
             OUTPUT_DIR: stemcells
         inputs:
+        - name: concourse-deploy-cloudfoundry
         outputs:
         - name: stemcells
           path: ""
