@@ -151,7 +151,7 @@ jobs:
           params:
             CLOUD_CONFIG_PLUGIN:  {{cloud_config_plugin}}
             PRODUCT_PLUGIN: {{product_plugin}}
-            VAULT_DOMAIN: {{vault_domain}}
+            VAULT_ADDR: {{vault_addr}}
             VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
             VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
             VAULT_HASH_PASSWORD: {{vault_hash_password}}
