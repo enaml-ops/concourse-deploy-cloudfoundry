@@ -203,8 +203,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -220,8 +219,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -237,8 +235,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -254,8 +251,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -271,8 +267,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -288,8 +283,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -305,8 +299,7 @@ jobs:
     - get: pipeline-tasks
       trigger: false
     - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
+      passed: [run-acceptance-tests]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
