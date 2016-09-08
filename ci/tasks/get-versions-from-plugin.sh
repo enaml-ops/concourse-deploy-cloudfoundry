@@ -25,4 +25,6 @@ PRODUCT_NAME=$(printf $PRODUCT_PLUGIN | cut -d- -f1)
 omg-cli/omg-linux product-meta $PRODUCT_NAME | \
   grep ^pivotal-$PRODUCT | awk '{print $NF}' > $OUTPUT_DIR/version
 
+printf "Version $(<$OUTPUT_DIR/version)\n"
+
 #eof

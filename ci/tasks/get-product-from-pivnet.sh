@@ -1,16 +1,16 @@
 #!/bin/bash -e
 
-if [[ -z $PRODUCT ]] ; then
+if [[ -z $PRODUCT ]]; then
   printf "ERROR: \$PRODUCT not defined\n"
   exit 1
 fi
 
-if [[ -z $PIVNET_API_TOKEN ]] ; then
+if [[ -z $PIVNET_API_TOKEN ]]; then
   printf "ERROR: \$PIVNET_API_TOKEN not defined\n"
   exit 1
 fi
 
-if [[ -z $OUTPUT_DIR ]] ; then
+if [[ -z $OUTPUT_DIR ]]; then
   printf "ERROR: \$OUTPUT_DIR not defined\n"
   exit 1
 fi
@@ -38,7 +38,7 @@ RELEASE_ID=$(eval $CMD)
 # Accept EULA
 CMD="curl -s https://network.pivotal.io/api/v2/products/$PRODUCT/releases | jq ' .releases[] | select(.version == \"$PIVNET_REL_VERSION\") | ._links.eula_acceptance.href '"
 EULA=$(eval $CMD | tr -d '"')
-curl -H "Authorization: Token $PIVNET_API_TOKEN" -X POST $EULA
+curl -s -H "Authorization: Token $PIVNET_API_TOKEN" -X POST $EULA
 
 # Determine product name if a stemcell
 if [[ $PRODUCT == "stemcells" ]]; then
@@ -61,8 +61,6 @@ MD5_HASH=$(curl -s $PIVNET_SELF | jq ' .product_file.md5' | tr -d '"')
 
 # Download
 echo "Downloading $PRODUCT $PIVNET_REL_VERSION version from $PIVNET_LINK with md5=$MD5_HASH..."
-
-curl -H "Authorization: Token $PIVNET_API_TOKEN" -X POST https://network.pivotal.io/api/v2/products/$1/releases/$RELEASE_ID/eula_acceptance
 wget -O $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal --post-data="" --header="Authorization: Token $PIVNET_API_TOKEN" $PIVNET_LINK
 
 # Get MD5 hash of the downloaded file
