@@ -124,12 +124,12 @@ jobs:
             repository: virtmerlin/deploy-worker
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/get-product-from-pivnet.sh
-          params:
-            PRODUCT: elastic-runtime
-            PRODUCT_NAME: "PCF Elastic Runtime"
-            VERSION: from-omg-plugin
-            PIVNET_API_TOKEN: {{pivnet_api_token}}
-            OUTPUT_DIR: elastic-runtime
+        params:
+          PRODUCT: elastic-runtime
+          PRODUCT_NAME: "PCF Elastic Runtime"
+          VERSION: from-omg-plugin
+          PIVNET_API_TOKEN: {{pivnet_api_token}}
+          OUTPUT_DIR: elastic-runtime
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: versions
@@ -145,12 +145,12 @@ jobs:
             repository: virtmerlin/deploy-worker
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/get-product-from-pivnet.sh
-          params:
-            PRODUCT: stemcells
-            VERSION: latest
-            STEMCELL_CPI: vSphere
-            PIVNET_API_TOKEN: {{pivnet_api_token}}
-            OUTPUT_DIR: stemcells
+        params:
+          PRODUCT: stemcells
+          VERSION: latest
+          STEMCELL_CPI: vSphere
+          PIVNET_API_TOKEN: {{pivnet_api_token}}
+          OUTPUT_DIR: stemcells
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
