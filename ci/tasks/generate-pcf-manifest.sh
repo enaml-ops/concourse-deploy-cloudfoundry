@@ -1,5 +1,15 @@
 #!/bin/bash -e
 
+chmod +x omg-cli/omg-linux
+
+omg-cli/omg-linux register-plugin \
+  -type cloudconfig \
+  -pluginpath omg-cli/$CLOUD_CONFIG_PLUGIN
+
+omg-cli/omg-linux register-plugin \
+  -type product \
+  -pluginpath omg-cli-product-bundle/$PRODUCT_PLUGIN
+
 omg-cli/omg-linux deploy-product \
   --bosh-url $(vault read --field=bosh-url $VAULT_HASH_HOSTVARS) \
   --bosh-port $(vault read --field=bosh-port $VAULT_HASH_HOSTVARS) \
