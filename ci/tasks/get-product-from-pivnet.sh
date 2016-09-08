@@ -74,6 +74,6 @@ else
 fi
 
 # Extract the bosh release to $OUTPUT_DIR/releases
-unzip -d $OUTPUT_DIR $PRODUCT-$PIVNET_REL_VERSION.pivotal
+unzip -d $OUTPUT_DIR $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal
 
 #eof
