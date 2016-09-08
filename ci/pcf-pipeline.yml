@@ -92,7 +92,7 @@ jobs:
           source:
             repository: virtmerlin/deploy-worker
         run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/generate-manifest.sh
+          path: concourse-deploy-cloudfoundry/ci/tasks/generate-pcf-manifest.sh
         params:
           BOSH_CLIENT: {{bosh-user}}
           BOSH_CLIENT_SECRET: {{bosh-pass}}
@@ -108,8 +108,10 @@ jobs:
           OUTPUT_DIR: manifest
         inputs:
         - name: concourse-deploy-cloudfoundry
+        - name: get-versions
         - name: omg-cli
         - name: omg-cli-product-bundle
+        - name: stemcell
         outputs:
         - name: manifest
           path: ""

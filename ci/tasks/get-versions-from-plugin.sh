@@ -20,7 +20,9 @@ omg-cli/omg-linux register-plugin \
   -type product \
   -pluginpath omg-cli-product-bundle/$PRODUCT_PLUGIN
 
-omg-cli/omg-linux product-meta $PRODUCT_PLUGIN | \
-  grep ^pivotal-$PRODUCT | awk '{print $3}' > $OUTPUT_DIR/version
+PRODUCT_NAME=$(printf $PRODUCT_PLUGIN | cut -d- -f1)
+
+omg-cli/omg-linux product-meta $PRODUCT_NAME | \
+  grep ^pivotal-$PRODUCT | awk '{print $NF}' > $OUTPUT_DIR/version
 
 #eof
