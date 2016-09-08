@@ -3,26 +3,31 @@ groups: []
 resources:
 - name: concourse-deploy-cloudfoundry
   type: git
+  check_every: 1h
   source:
     uri: https://github.com/enaml-ops/concourse-deploy-cloudfoundry
     branch: master
 - name: omg-cli
   type: github-release
+  check_every: 1h
   source:
     user: enaml-ops
     repository: omg-cli
 - name: omg-cli-product-bundle
   type: github-release
+  check_every: 1h
   source:
     user: enaml-ops
     repository: omg-product-bundle
 - name: pipeline-tasks
   type: git
+  check_every: 1h
   source:
     uri: https://github.com/18f/cg-pipeline-tasks.git
     branch: master
 - name: {{deployment-name}}
   type: bosh-deployment
+  check_every: 1h
   source:
     ca_cert: {{bosh-cacert}}
     client_id: {{bosh-client-id}}
@@ -31,10 +36,12 @@ resources:
     target: {{bosh-target}}
 - name: stemcell
   type: bosh-io-stemcell
+  check_every: 1h
   source:
     name: {{stemcell}}
 - name: slack
   type: slack-notification
+  check_every: 1h
   source:
     url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -51,6 +58,9 @@ jobs:
     - get: omg-cli
     - get: omg-cli-product-bundle
       trigger: true
+      params:
+        globs:
+        - cloudfoundry-plugin-*
     - get: stemcell
     - task: get-versions
       config:
