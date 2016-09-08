@@ -60,8 +60,8 @@ PIVNET_SELF=$(eval $CMD | tr -d '"')
 MD5_HASH=$(curl -s $PIVNET_SELF | jq ' .product_file.md5' | tr -d '"')
 
 # Download
-printf "Downloading $PRODUCT $PIVNET_REL_VERSION version from $PIVNET_LINK with md5=$MD5_HASH...\n"
-wget -q -O $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal --post-data="" --header="Authorization: Token $PIVNET_API_TOKEN" $PIVNET_LINK
+printf "\nDownloading $PRODUCT $PIVNET_REL_VERSION version from $PIVNET_LINK with md5=$MD5_HASH...\n"
+wget -q --show-progress -O $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal --post-data="" --header="Authorization: Token $PIVNET_API_TOKEN" $PIVNET_LINK
 
 # Get MD5 hash of the downloaded file
 MD5_HASH_DL=$(openssl md5 $OUTPUT_DIR/$PRODUCT-$PIVNET_REL_VERSION.pivotal | awk -F "= " '{print$2}')
