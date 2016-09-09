@@ -121,10 +121,28 @@ jobs:
         outputs:
         - name: manifest
           path: ""
+    - task: extract-tile
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/extract-tile.sh
+        params:
+          PRODUCT_DIR: elastic-runtime
+          OUTPUT_DIR: elastic-runtime-extracted
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        - name: elastic-runtime
+        outputs:
+        - name: elastic-runtime-extracted
+          path: ""
     - put: {{deployment-name}}
       params:
         manifest: manifest/deployment.yml
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - elastic-runtime/*.pivotal
+        - elastic-runtime-extracted/releases/*.tgz
