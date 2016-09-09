@@ -60,6 +60,9 @@ jobs:
         globs:
         - cloudfoundry-plugin-*
     - get: elastic-runtime
+      params:
+        globs:
+        - cf-*
     - get: stemcells
       params:
         globs:
@@ -124,4 +127,4 @@ jobs:
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - elastic-runtime/releases/*.tgz
+        - elastic-runtime/*.pivotal
