@@ -146,3 +146,171 @@ jobs:
         - stemcells/bosh-stemcell*.tgz
         releases:
         - elastic-runtime-extracted/releases/*.tgz
+- name: smoke-tests
+  plan:
+    - get: {{deployment-name}}
+      passed: [deploy]
+      trigger: true
+    - task: smoke-tests
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: smoke-tests
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+- name: acceptance-tests
+  plan:
+    - get: {{deployment-name}}
+      passed: [smoke-tests]
+      trigger: true
+    - task: acceptance-tests
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: acceptance-tests
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+- name: push-apps-manager
+  plan:
+    - get: {{deployment-name}}
+      passed: [acceptance-tests]
+      trigger: true
+    - task: push-apps-manager
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: push-apps-manager
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+- name: notifications
+  plan:
+    - get: {{deployment-name}}
+      passed: [push-apps-manager]
+      trigger: true
+    - task: notifications
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: notifications
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+- name: notifications-ui
+  plan:
+    - get: {{deployment-name}}
+      passed: [notifications]
+      trigger: true
+    - task: notifications-ui
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: notifications-ui
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+- name: autoscaling
+  plan:
+    - get: {{deployment-name}}
+      passed: [push-apps-manager]
+      trigger: true
+    - task: autoscaling
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: autoscaling
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:
+- name: autoscaling-register-broker
+  plan:
+    - get: {{deployment-name}}
+      passed: [autoscaling]
+      trigger: true
+    - task: autoscaling-register-broker
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
+        params:
+          BOSH_CACERT: {{bosh-cacert}}
+          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_ERRAND: autoscaling-register-broker
+          BOSH_TARGET: {{bosh-target}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        outputs:

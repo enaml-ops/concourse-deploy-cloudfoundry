@@ -11,10 +11,10 @@ omg-cli/omg-linux register-plugin \
   -pluginpath omg-cli-product-bundle/$PRODUCT_PLUGIN
 
 omg-cli/omg-linux deploy-product \
-  --bosh-url $(vault read --field=bosh-url $VAULT_HASH_HOSTVARS) \
-  --bosh-port $(vault read --field=bosh-port $VAULT_HASH_HOSTVARS) \
-  --bosh-user $(vault read --field=bosh-user $VAULT_HASH_HOSTVARS) \
-  --bosh-pass $(vault read --field=bosh-pass $VAULT_HASH_HOSTVARS) \
+  --bosh-url $(vault read -field=bosh-url $VAULT_HASH_HOSTVARS) \
+  --bosh-port $(vault read -field=bosh-port $VAULT_HASH_HOSTVARS) \
+  --bosh-user $(vault read -field=bosh-user $VAULT_HASH_HOSTVARS) \
+  --bosh-pass $(vault read -field=bosh-pass $VAULT_HASH_HOSTVARS) \
   --print-manifest \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
