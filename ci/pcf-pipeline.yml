@@ -162,7 +162,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: smoke-tests
@@ -186,7 +186,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: acceptance-tests
@@ -210,7 +210,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: push-apps-manager
@@ -234,7 +234,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: notifications
@@ -258,7 +258,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: notifications-ui
@@ -282,7 +282,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: autoscaling
@@ -306,7 +306,7 @@ jobs:
           path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
         params:
           BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT_ID: {{bosh-client-id}}
+          BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: autoscaling-register-broker

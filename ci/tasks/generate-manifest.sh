@@ -3,10 +3,6 @@
 chmod +x omg-cli/omg-linux
 
 omg-cli/omg-linux register-plugin \
-  -type cloudconfig \
-  -pluginpath omg-cli/$CLOUD_CONFIG_PLUGIN
-
-omg-cli/omg-linux register-plugin \
   -type product \
   -pluginpath omg-cli-product-bundle/$PRODUCT_PLUGIN
 
