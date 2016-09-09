@@ -1,6 +1,13 @@
 groups: []
 
 resources:
+- name: elastic-runtime
+  type: pivnet
+  check_every: 1h
+  source:
+    api_token: {{pivnet_api_token}}
+    product_slug: elastic-runtime
+    product_version: {{ert-version-regex}}
 - name: concourse-deploy-cloudfoundry
   type: git
   check_every: 1h
@@ -19,12 +26,6 @@ resources:
   source:
     user: enaml-ops
     repository: omg-product-bundle
-- name: pipeline-tasks
-  type: git
-  check_every: 1h
-  source:
-    uri: https://github.com/18f/cg-pipeline-tasks.git
-    branch: master
 - name: {{deployment-name}}
   type: bosh-deployment
   check_every: 1h
@@ -34,22 +35,19 @@ resources:
     client_secret: {{bosh-client-secret}}
     deployment: cf
     target: {{bosh-target}}
-- name: stemcell
-  type: bosh-io-stemcell
-  check_every: 1h
+- name: stemcells
+  type: pivnet
   source:
-    name: {{stemcell}}
-- name: slack
-  type: slack-notification
-  check_every: 1h
-  source:
-    url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
+    api_token: {{pivnet_api_token}}
+    product_slug: stemcells
+    product_version: {{stemcell-version-regex}}
 
 resource_types:
-- name: slack-notification
+- name: pivnet
   type: docker-image
   source:
-    repository: cfcommunity/slack-notification-resource
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
 
 jobs:
 - name: deploy
@@ -61,7 +59,11 @@ jobs:
       params:
         globs:
         - cloudfoundry-plugin-*
-    - get: stemcell
+    - get: elastic-runtime
+    - get: stemcells
+      params:
+        globs:
+        - {{stemcell-cpi-glob}}
     - task: get-versions
       config:
         platform: linux
@@ -99,6 +101,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
           PRODUCT_PLUGIN: {{product_plugin}}
+          SKIP_HAPROXY: {{skip-haproxy}}
           VAULT_ADDR: {{vault_addr}}
           VAULT_HASH_IP: {{vault_hash_ip}}
           VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
@@ -110,202 +113,15 @@ jobs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
         - name: omg-cli-product-bundle
-        - name: stemcell
+        - name: stemcells
         - name: versions
         outputs:
         - name: manifest
-          path: ""
-    - task: get-elastic-runtime
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: virtmerlin/deploy-worker
-        run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/get-product-from-pivnet.sh
-        params:
-          PRODUCT: elastic-runtime
-          PRODUCT_NAME: "PCF Elastic Runtime"
-          VERSION: from-omg-plugin
-          PIVNET_API_TOKEN: {{pivnet_api_token}}
-          OUTPUT_DIR: elastic-runtime
-        inputs:
-        - name: concourse-deploy-cloudfoundry
-        - name: versions
-        outputs:
-        - name: elastic-runtime
-          path: ""
-    - task: get-stemcell
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: virtmerlin/deploy-worker
-        run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/get-product-from-pivnet.sh
-        params:
-          PRODUCT: stemcells
-          VERSION: latest
-          STEMCELL_CPI: vSphere
-          PIVNET_API_TOKEN: {{pivnet_api_token}}
-          OUTPUT_DIR: stemcells
-        inputs:
-        - name: concourse-deploy-cloudfoundry
-        outputs:
-        - name: stemcells
           path: ""
     - put: {{deployment-name}}
       params:
         manifest: manifest/deployment.yml
         stemcells:
-        - stemcells/stemcells*.pivotal
+        - stemcells/bosh-stemcell*.tgz
         releases:
         - elastic-runtime/releases/*.tgz
-- name: run-smoke-tests
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [deploy]
-      trigger: true
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: {{bosh-cacert}}
-- name: run-acceptance-tests
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-smoke-tests]
-      trigger: true
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: acceptance_tests
-      BOSH_CACERT: {{bosh-cacert}}
-- name: push-apps-manager
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: push-apps-manager
-      BOSH_CACERT: {{bosh-cacert}}
-- name: deploy-notifications
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: deploy-notifications
-      BOSH_CACERT: {{bosh-cacert}}
-- name: test-notifications
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: test-notifications
-      BOSH_CACERT: {{bosh-cacert}}
-- name: deploy-notifications-ui
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: deploy-notifications-ui
-      BOSH_CACERT: {{bosh-cacert}}
-- name: deploy-autoscaling
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: deploy-autoscaling
-      BOSH_CACERT: {{bosh-cacert}}
-- name: register-broker
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: register-broker
-      BOSH_CACERT: {{bosh-cacert}}
-- name: test-autoscaling
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: {{deployment-name}}
-      passed: [run-acceptance-tests]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{bosh-target}}
-      BOSH_USERNAME: {{bosh-user}}
-      BOSH_PASSWORD: {{bosh-pass}}
-      BOSH_DEPLOYMENT_NAME: {{deployment-name}}
-      BOSH_ERRAND: test-autoscaling
-      BOSH_CACERT: {{bosh-cacert}}

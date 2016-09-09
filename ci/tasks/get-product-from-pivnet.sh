@@ -24,9 +24,8 @@ fi
 # Determine latest version
 if [[ $VERSION == "latest" ]]; then
   PIVNET_REL_VERSION=$(curl -s https://network.pivotal.io/api/v2/products/$PRODUCT/releases | \
-    jq '[.releases[].version]' | \
-    grep '[0-9].[0-9].[0-9]' | \
-    awk -F\" '{print $2}' | sort -r | head -1)
+    jq -r '[.releases[].id]' | \
+    sort -nr | head -1)
 else
   PIVNET_REL_VERSION=$VERSION
 fi
@@ -42,6 +41,7 @@ curl -s -H "Authorization: Token $PIVNET_API_TOKEN" -X POST $EULA > /dev/null
 
 # Determine product name if a stemcell
 if [[ $PRODUCT == "stemcells" ]]; then
+  VERSION=$(<stemcell/version)
   if [[ -z $STEMCELL_CPI ]]; then
     printf "ERROR: \$STEMCELL_CPI not defined"
     exit 1

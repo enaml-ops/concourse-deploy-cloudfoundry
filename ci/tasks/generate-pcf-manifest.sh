@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+if [[ $SKIP_HAPROXY == "false" ]]; then
+  HAPROXY_FLAG="--skip-haproxy=false"
+fi
+
 chmod +x omg-cli/omg-linux
 
 omg-cli/omg-linux register-plugin \
@@ -18,7 +22,8 @@ omg-cli/omg-linux deploy-product \
   --print-manifest \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
-  --stemcell-version $(<stemcell/version) \
+  --stemcell-version $(jq -r .Release.Version <stemcells/metadata.json) \
+  $HAPROXY_FLAG \
   --infer-from-cloud \
   --vault-active \
   --vault-domain $VAULT_ADDR \
