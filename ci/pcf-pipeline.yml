@@ -86,6 +86,9 @@ jobs:
   plan:
     - get: concourse-deploy-cloudfoundry
     - get: omg-cli
+      params:
+        globs:
+        - *linux*
     - get: omg-product-bundle
       trigger: true
       params:
@@ -133,6 +136,9 @@ jobs:
     - get: concourse-deploy-cloudfoundry
     - get: omg-cli
       passed: [get-product-version]
+      params:
+        globs:
+        - *linux*
     - get: omg-product-bundle
       passed: [get-product-version]
       trigger: true
