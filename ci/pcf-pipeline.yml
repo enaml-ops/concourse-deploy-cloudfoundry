@@ -32,7 +32,7 @@ resources:
   source: {interval: 24h}
 - name: elastic-runtime
   type: pivnet
-  check_every: 1h
+  check_every: 4h
   source:
     api_token: {{pivnet_api_token}}
     product_slug: elastic-runtime
@@ -43,25 +43,24 @@ resources:
   source: {interval: 4h}
 - name: concourse-deploy-cloudfoundry
   type: git
-  check_every: 1h
+  check_every: 4h
   source:
     uri: https://github.com/enaml-ops/concourse-deploy-cloudfoundry
     branch: master
 - name: omg-cli
   type: github-release
-  check_every: 1h
+  check_every: 4h
   source:
     user: enaml-ops
     repository: omg-cli
 - name: omg-product-bundle
   type: github-release
-  check_every: 1h
+  check_every: 4h
   source:
     user: enaml-ops
     repository: omg-product-bundle
 - name: {{deployment-name}}
   type: bosh-deployment
-  check_every: 1h
   source:
     ca_cert: {{bosh-cacert}}
     client_id: {{bosh-client-id}}

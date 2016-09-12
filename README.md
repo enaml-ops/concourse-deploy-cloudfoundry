@@ -16,44 +16,44 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     git clone https://github.com/enaml-ops/concourse-deploy-cloudfoundry.git
     ```
 
-1. Copy the sample config file `vault-hostvars-sample.json`.
+1. Copy the sample config file `deployment-vars-sample.json`.
 
     ```
     cd concourse-deploy-cloudfoundry
-    cp vault-hostvars-sample.json vault-hostvars.json
+    cp deployment-vars-sample.json deployment-vars.json
     ```
 
-1. Edit `vault-hostvars.json`, adding the appropriate values.
+1. Edit `deployment-vars.json`, adding the appropriate values.
 
     ```
-    $EDITOR vault-hostvars.json
+    $EDITOR deployment-vars.json
     ```
 
-    All available keys can be listed by querying the plugin.  If not specified in `vault-hostvars.json`, default values will be used where possible.
+    All available keys can be listed by querying the plugin.  If not specified in `deployment-vars.json`, default values will be used where possible.
 
     ```
     omg-linux deploy-product cloudfoundry-plugin-linux --help
     ```
 
-1. Load your deployment k/v pairs into `vault`.  `VAULT_HASH` here and `vault_hash_hostvars` in `credentials.yml` must match.
+1. Load your deployment vars into `vault`.  `VAULT_HASH` here and `vault_hash_vars` in `concourse-vars.yml` below must match.
 
     ```
     VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
-    VAULT_HASH=secret/cf-staging-hostvars
-    vault write ${VAULT_HASH} @vault-hostvars.json
+    VAULT_HASH=secret/cf-staging-vars
+    vault write ${VAULT_HASH} @deployment-vars.json
     ```
 
-1. Delete or move `vault-hostvars.json` to a secure location.
-1. Copy the credentials template.
+1. Delete or move `deployment-vars.json` to a secure location.
+1. Copy the concourse variables template.
 
     ```
-    cp ci/credentials-template.yml credentials.yml
+    cp ci/concourse-vars-template.yml concourse-vars.yml
     ```
 
-1. Edit `credentials.yml`, adding appropriate values.
+1. Edit `concourse-vars-template.yml`, adding appropriate values.
 
     ```
-    $EDITOR credentials.yml
+    $EDITOR concourse-vars.yml
     ```
 
     Note: If you are deploying Pivotal CF (PCF), you must add your `API Token` found at the bottom of your [Pivotal Profile](https://network.pivotal.io/users/dashboard/edit-profile) page.
@@ -61,26 +61,27 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 1. Create or update the pipeline, either opensource or PCF.
 
     ```
-    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/opensource-pipeline.yml -l credentials.yml
+    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/opensource-pipeline.yml -l concourse-vars.yml
     ```
 
     _or_
 
     ```
-    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/pcf-pipeline.yml -l credentials.yml
+    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/pcf-pipeline.yml -l concourse-vars.yml
     ```
 
-1. Delete or move `credentials.yml` to a secure location.
+1. Delete or move `concourse-vars.yml` to a secure location.
 1. Unpause the pipeline
 
     ```
-    fly -t TARGET unpause-pipeline -p deploy-cloudfoundry
+    fly -t TARGET unpause-pipeline -p deploy-pcf
     ```
 
 1. Trigger the deployment job and observe the output.
 
     ```
-    fly -t TARGET trigger-job -j deploy-cloudfoundry/deploy -w
+    fly -t TARGET trigger-job -j deploy-pcf/get-product-version -w
+    fly -t TARGET trigger-job -j deploy-pcf/deploy -w
     ```
 
 
