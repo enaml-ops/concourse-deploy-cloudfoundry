@@ -47,7 +47,7 @@ resources:
   source:
     user: enaml-ops
     repository: omg-cli
-- name: omg-cli-product-bundle
+- name: omg-product-bundle
   type: github-release
   check_every: 1h
   source:
@@ -81,7 +81,7 @@ jobs:
   plan:
     - get: concourse-deploy-cloudfoundry
     - get: omg-cli
-    - get: omg-cli-product-bundle
+    - get: omg-product-bundle
       trigger: true
       params:
         globs:
@@ -101,7 +101,7 @@ jobs:
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
-        - name: omg-cli-product-bundle
+        - name: omg-product-bundle
         outputs:
         - name: versions
           path: ""
@@ -128,7 +128,7 @@ jobs:
     - get: concourse-deploy-cloudfoundry
     - get: omg-cli
       passed: [get-product-version]
-    - get: omg-cli-product-bundle
+    - get: omg-product-bundle
       passed: [get-product-version]
       trigger: true
       params:
@@ -168,7 +168,7 @@ jobs:
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
-        - name: omg-cli-product-bundle
+        - name: omg-product-bundle
         - name: stemcells
         - name: versions
         outputs:
