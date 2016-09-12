@@ -20,7 +20,7 @@ omg-cli/omg-linux deploy-product \
   --etcd-release-version $(<etcd-release/version) \
   --cf-mysql-release-version $(<cf-mysql-release/version) \
   --cflinuxfs2-release-version $(<cflinuxfs2-release/version) \
-  --stemcell-version $(<stemcell/version) \
+  --stemcell-version $(<stemcells/version) \
   --infer-from-cloud \
   --vault-active \
   --vault-domain $VAULT_ADDR \
