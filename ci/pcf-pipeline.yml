@@ -115,8 +115,8 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/update-pipeline.sh
         params:
-          BUILD_PIPELINE_NAME: $BUILD_PIPELINE_NAME
-          CONCOURSE_URL: $ATC_EXTERNAL_URL
+          PIPELINE_NAME: deploy-pcf
+          CONCOURSE_URL: {{concourse-url}}
           CONCOURSE_USER: {{concourse-user}}
           CONCOURSE_PASS: {{concourse-pass}}
         inputs:
