@@ -16,20 +16,20 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     git clone https://github.com/enaml-ops/concourse-deploy-cloudfoundry.git
     ```
 
-1. Copy the sample config file `deployment-vars-sample.json`.
+1. Copy the sample config file `deployment-props-sample.json`.
 
     ```
     cd concourse-deploy-cloudfoundry
-    cp deployment-vars-sample.json deployment-vars.json
+    cp deployment-props-sample.json deployment-props.json
     ```
 
-1. Edit `deployment-vars.json`, adding the appropriate values.
+1. Edit `deployment-props.json`, adding the appropriate values.
 
     ```
-    $EDITOR deployment-vars.json
+    $EDITOR deployment-props.json
     ```
 
-    All available keys can be listed by querying the plugin.  If not specified in `deployment-vars.json`, default values will be used where possible.
+    All available keys can be listed by querying the plugin.  If not specified in `deployment-props.json`, default values will be used where possible.
 
     ```
     omg-linux deploy-product cloudfoundry-plugin-linux --help
@@ -39,11 +39,11 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 
     ```
     VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
-    VAULT_HASH=secret/cf-staging-vars
-    vault write ${VAULT_HASH} @deployment-vars.json
+    VAULT_HASH=secret/cf-staging-props
+    vault write ${VAULT_HASH} @deployment-props.json
     ```
 
-1. Delete or move `deployment-vars.json` to a secure location.
+1. Delete or move `deployment-props.json` to a secure location.
 1. Copy the concourse variables template.
 
     ```

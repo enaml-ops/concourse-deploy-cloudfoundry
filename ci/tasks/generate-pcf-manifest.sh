@@ -26,6 +26,7 @@ omg-cli/omg-linux deploy-product \
   --vault-hash-host $VAULT_HASH_HOSTVARS \
   --vault-hash-ip $VAULT_HASH_IP \
   --vault-hash-keycert $VAULT_HASH_KEYCERT \
+  --vault-hash-misc $VAULT_HASH_MISC \
   --vault-hash-password $VAULT_HASH_PASSWORD \
   --vault-token $VAULT_TOKEN > manifest/deployment.yml
 

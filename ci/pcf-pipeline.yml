@@ -173,6 +173,7 @@ jobs:
           VAULT_HASH_IP: {{vault_hash_ip}}
           VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
           VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
+          VAULT_HASH_MISC: {{vault_hash_misc}}
           VAULT_HASH_PASSWORD: {{vault_hash_password}}
           VAULT_TOKEN: {{vault_token}}
           OUTPUT_DIR: manifest
@@ -181,7 +182,7 @@ jobs:
         - name: omg-cli
         - name: omg-product-bundle
         - name: stemcells
-        - name: versions
+        - name: get-product-version
         outputs:
         - name: manifest
           path: ""

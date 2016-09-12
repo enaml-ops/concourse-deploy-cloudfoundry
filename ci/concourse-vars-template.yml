@@ -42,5 +42,6 @@ vault_addr: http://10.0.0.8:8200
 vault_hash_hostvars: secret/cf-nonprod-hostvars
 vault_hash_ip: secret/cf-nonprod-ip
 vault_hash_keycert: secret/cf-nonprod-keycert
+vault_hash_misc: secret/cf-staging-props
 vault_hash_password: secret/cf-nonprod-password
 vault_token: VAULT_TOKEN
