@@ -27,6 +27,9 @@ groups:
   - autoscaling-register-broker
 
 resources:
+- name: daily
+  type: time
+  source: {interval: 24h}
 - name: elastic-runtime
   type: pivnet
   check_every: 1h
@@ -35,6 +38,9 @@ resources:
     product_slug: elastic-runtime
     product_version: {{elastic-runtime-version}}
     sort_by: semver
+- name: every-4hrs
+  type: time
+  source: {interval: 4h}
 - name: concourse-deploy-cloudfoundry
   type: git
   check_every: 1h
@@ -202,6 +208,8 @@ jobs:
         - elastic-runtime-extracted/releases/[o-r]*.tgz
 - name: smoke-tests
   plan:
+    - get: every-4hrs
+      trigger: true
     - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [deploy]
@@ -227,6 +235,8 @@ jobs:
         outputs:
 - name: acceptance-tests
   plan:
+    - get: daily
+      trigger: true
     - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [smoke-tests]
