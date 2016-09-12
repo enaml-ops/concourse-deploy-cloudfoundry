@@ -1,4 +1,30 @@
-groups: []
+groups:
+- name: all
+  jobs:
+  - get-versions
+  - deploy
+  - smoke-tests
+  - acceptance-tests
+  - push-apps-manager
+  - notifications
+  - notifications-ui
+  - autoscaling
+  - autoscaling-register-broker
+- name: deploy
+  jobs:
+  - get-versions
+  - deploy
+- name: tests
+  jobs:
+  - smoke-tests
+  - acceptance-tests
+- name: errands
+  jobs:
+  - push-apps-manager
+  - notifications
+  - notifications-ui
+  - autoscaling
+  - autoscaling-register-broker
 
 resources:
 - name: elastic-runtime
@@ -7,7 +33,8 @@ resources:
   source:
     api_token: {{pivnet_api_token}}
     product_slug: elastic-runtime
-    product_version: {{ert-version-regex}}
+    product_version: {{elastic_runtime_version}}
+    sort_by: semver
 - name: concourse-deploy-cloudfoundry
   type: git
   check_every: 1h
@@ -40,7 +67,7 @@ resources:
   source:
     api_token: {{pivnet_api_token}}
     product_slug: stemcells
-    product_version: {{stemcell-version-regex}}
+    product_version: {{stemcell-version}}
 
 resource_types:
 - name: pivnet
@@ -50,6 +77,52 @@ resource_types:
     tag: latest-final
 
 jobs:
+- name: get-versions
+  plan:
+    - get: concourse-deploy-cloudfoundry
+    - get: omg-cli
+    - get: omg-cli-product-bundle
+      trigger: true
+      params:
+        globs:
+        - cloudfoundry-plugin-*
+    - task: get-versions
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/get-versions-from-plugin.sh
+        params:
+          PRODUCT_PLUGIN: {{product_plugin}}
+          OUTPUT_DIR: versions
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        - name: omg-cli
+        - name: omg-cli-product-bundle
+        outputs:
+        - name: versions
+          path: ""
+    - task: update-pipeline
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/update-pipeline.sh
+        params:
+          BUILD_PIPELINE_NAME: $BUILD_PIPELINE_NAME
+          CONCOURSE_URL: $ATC_EXTERNAL_URL
+          CONCOURSE_USER: {{concourse-user}}
+          CONCOURSE_PASS: {{concourse-pass}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        - name: versions
+        outputs:
 - name: deploy
   plan:
     - get: concourse-deploy-cloudfoundry
@@ -67,28 +140,6 @@ jobs:
       params:
         globs:
         - {{stemcell-cpi-glob}}
-    - task: get-versions
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: virtmerlin/deploy-worker
-        run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/get-versions-from-plugin.sh
-        params:
-          CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
-          PRODUCT: elastic-runtime
-          PRODUCT_PLUGIN: {{product_plugin}}
-          VERSION: latest
-          OUTPUT_DIR: versions
-        inputs:
-        - name: concourse-deploy-cloudfoundry
-        - name: omg-cli
-        - name: omg-cli-product-bundle
-        outputs:
-        - name: versions
-          path: ""
     - task: generate-manifest
       config:
         platform: linux
@@ -102,7 +153,6 @@ jobs:
           BOSH_CLIENT: {{bosh-user}}
           BOSH_CLIENT_SECRET: {{bosh-pass}}
           BOSH_CACERT: {{bosh-cacert}}
-          CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
           PRODUCT_PLUGIN: {{product_plugin}}
           SKIP_HAPROXY: {{skip-haproxy}}
           VAULT_ADDR: {{vault_addr}}
@@ -145,9 +195,11 @@ jobs:
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - elastic-runtime-extracted/releases/*.tgz
+        - elastic-runtime-extracted/releases/[a-m]*.tgz
+        - elastic-runtime-extracted/releases/[o-r]*.tgz
 - name: smoke-tests
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [deploy]
       trigger: true
@@ -164,7 +216,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: smoke-tests
           BOSH_TARGET: {{bosh-target}}
         inputs:
@@ -172,6 +224,7 @@ jobs:
         outputs:
 - name: acceptance-tests
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [smoke-tests]
       trigger: true
@@ -188,7 +241,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: acceptance-tests
           BOSH_TARGET: {{bosh-target}}
         inputs:
@@ -196,6 +249,7 @@ jobs:
         outputs:
 - name: push-apps-manager
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [acceptance-tests]
       trigger: true
@@ -212,7 +266,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: push-apps-manager
           BOSH_TARGET: {{bosh-target}}
         inputs:
@@ -220,8 +274,9 @@ jobs:
         outputs:
 - name: notifications
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
-      passed: [push-apps-manager]
+      passed: [acceptance-tests]
       trigger: true
     - task: notifications
       config:
@@ -236,7 +291,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: notifications
           BOSH_TARGET: {{bosh-target}}
         inputs:
@@ -244,6 +299,7 @@ jobs:
         outputs:
 - name: notifications-ui
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [notifications]
       trigger: true
@@ -260,7 +316,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: notifications-ui
           BOSH_TARGET: {{bosh-target}}
         inputs:
@@ -268,8 +324,9 @@ jobs:
         outputs:
 - name: autoscaling
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
-      passed: [push-apps-manager]
+      passed: [acceptance-tests]
       trigger: true
     - task: autoscaling
       config:
@@ -284,7 +341,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: autoscaling
           BOSH_TARGET: {{bosh-target}}
         inputs:
@@ -292,6 +349,7 @@ jobs:
         outputs:
 - name: autoscaling-register-broker
   plan:
+    - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
       passed: [autoscaling]
       trigger: true
@@ -308,7 +366,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
+          BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: autoscaling-register-broker
           BOSH_TARGET: {{bosh-target}}
         inputs:
