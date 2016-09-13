@@ -38,8 +38,8 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 1. Load your deployment properties into `vault`.  `VAULT_HASH` here and `vault_hash_misc` in `pipeline-vars.yml` below must match.
 
     ```
-    VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
-    VAULT_HASH=secret/cf-staging-props
+    export VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
+    export VAULT_HASH=secret/cf-staging-props
     vault write $VAULT_HASH @deployment-props.json
     ```
 
@@ -47,7 +47,7 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 1. Copy the pipeline variables template.
 
     ```
-    cp ci/pipeline-vars-template.yml pipeline-vars.yml
+    cp pipeline-vars-template.yml pipeline-vars.yml
     ```
 
 1. Edit `pipeline-vars.yml`, adding appropriate values.
