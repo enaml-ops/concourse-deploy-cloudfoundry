@@ -12,7 +12,7 @@ sed -i.original "
   }
 
   /^- name: stemcells$/,/product_version:/ {
-    s,\(product_version:\).*,\1 $(<versions/stemcell_version),
+    s,\(product_version:\).*,\1 \"$(<versions/stemcell_version)\",
   }
 " $PIPELINE_NAME.yml
 
