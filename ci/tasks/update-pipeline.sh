@@ -16,8 +16,6 @@ sed -i.original "
   }
 " $PIPELINE_NAME.yml
 
-./fly -t here set-pipeline -p $PIPELINE_NAME -c $PIPELINE_NAME.yml <<EOF
-y
-EOF
+./fly -t here set-pipeline -n -p $PIPELINE_NAME -c $PIPELINE_NAME.yml
 
 #eof
