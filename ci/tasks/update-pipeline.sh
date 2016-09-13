@@ -7,11 +7,11 @@ chmod +x fly
 ./fly -t here get-pipeline -p $PIPELINE_NAME > $PIPELINE_NAME.yml
 
 sed -i .original "
-  /^- name: elastic-runtime/,/product_version:/ {
+  /^- name: elastic-runtime$/,/product_version:/ {
     s,\(product_version:\).*,\1 $(<versions/product_version),
   }
 
-  /^- name: stemcells/,/product_version:/ {
+  /^- name: stemcells$/,/product_version:/ {
     s,\(product_version:\).*,\1 $(<versions/stemcell_version),
   }
 " $PIPELINE_NAME.yml
