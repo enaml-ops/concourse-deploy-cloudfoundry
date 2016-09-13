@@ -1,15 +1,15 @@
 #
-# Copy this file to credentials.yml, add appropriate values, and supply
+# Copy this file to pipeline-vars.yml, add appropriate values, and supply
 # to fly when creating or updating the concourse pipeline.
 #
 # For example:
 #
 #   fly -t TARGET set-pipeline \
-#     -p deploy-cloudfoundry \
-#     -c ci/deploy-cloudfoundry.yml \
-#     -l ci/credentials.yml
+#     -p deploy-pcf \
+#     -c ci/pcf-pipeline.yml \
+#     -l pipeline-vars.yml
 #
-# Note credentials.yml is in .gitignore to help avoid checking sensitive
+# Note pipeline-vars.yml is in .gitignore to help avoid checking sensitive
 # material into github.
 #
 # Notes on BOSH basic auth vs. uaa auth

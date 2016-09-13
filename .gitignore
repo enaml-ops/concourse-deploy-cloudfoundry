@@ -1,2 +1,3 @@
-**/credentials.yml
-**/vault-ip.json
+**/.DS_Store
+**/pipeline-vars.yml
+**/deployment-props.json

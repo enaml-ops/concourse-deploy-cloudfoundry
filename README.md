@@ -35,25 +35,25 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     omg-linux deploy-product cloudfoundry-plugin-linux --help
     ```
 
-1. Load your deployment vars into `vault`.  `VAULT_HASH` here and `vault_hash_vars` in `concourse-vars.yml` below must match.
+1. Load your deployment properties into `vault`.  `VAULT_HASH` here and `vault_hash_misc` in `pipeline-vars.yml` below must match.
 
     ```
     VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
     VAULT_HASH=secret/cf-staging-props
-    vault write ${VAULT_HASH} @deployment-props.json
+    vault write $VAULT_HASH @deployment-props.json
     ```
 
 1. Delete or move `deployment-props.json` to a secure location.
-1. Copy the concourse variables template.
+1. Copy the pipeline variables template.
 
     ```
-    cp ci/concourse-vars-template.yml concourse-vars.yml
+    cp ci/pipeline-vars-template.yml pipeline-vars.yml
     ```
 
-1. Edit `concourse-vars-template.yml`, adding appropriate values.
+1. Edit `pipeline-vars.yml`, adding appropriate values.
 
     ```
-    $EDITOR concourse-vars.yml
+    $EDITOR pipeline-vars.yml
     ```
 
     Note: If you are deploying Pivotal CF (PCF), you must add your `API Token` found at the bottom of your [Pivotal Profile](https://network.pivotal.io/users/dashboard/edit-profile) page.
@@ -61,16 +61,16 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 1. Create or update the pipeline, either opensource or PCF.
 
     ```
-    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/opensource-pipeline.yml -l concourse-vars.yml
+    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/opensource-pipeline.yml -l pipeline-vars.yml
     ```
 
     _or_
 
     ```
-    fly -t TARGET set-pipeline -p deploy-cloudfoundry -c ci/pcf-pipeline.yml -l concourse-vars.yml
+    fly -t TARGET set-pipeline -p deploy-pcf -c ci/pcf-pipeline.yml -l pipeline-vars.yml
     ```
 
-1. Delete or move `concourse-vars.yml` to a secure location.
+1. Delete or move `pipeline-vars.yml` to a secure location.
 1. Unpause the pipeline
 
     ```
@@ -83,5 +83,4 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     fly -t TARGET trigger-job -j deploy-pcf/get-product-version -w
     fly -t TARGET trigger-job -j deploy-pcf/deploy -w
     ```
-
 
