@@ -209,8 +209,7 @@ jobs:
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - elastic-runtime-extracted/releases/[a-m]*.tgz
-        - elastic-runtime-extracted/releases/[o-r]*.tgz
+        - elastic-runtime-extracted/releases/*.tgz
 - name: smoke-tests
   plan:
     - get: every-4hrs
