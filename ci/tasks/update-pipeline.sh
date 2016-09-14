@@ -14,6 +14,8 @@ sed -i.original "
   /^- name: stemcells$/,/product_version:/ {
     s,\(product_version:\).*,\1 \"$(<versions/stemcell_version)\",
   }
+
+  s,\(STEMCELL_VERSION:\).*,\1 \"$(<versions/stemcell_version)\",
 " $PIPELINE_NAME.yml
 
 ./fly -t here set-pipeline -n -p $PIPELINE_NAME -c $PIPELINE_NAME.yml

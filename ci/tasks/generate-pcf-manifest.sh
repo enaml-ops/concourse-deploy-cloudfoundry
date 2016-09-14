@@ -18,7 +18,7 @@ omg-cli/omg-linux deploy-product \
   --print-manifest \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
-  --stemcell-version $(jq -r .Release.Version <stemcells/metadata.json) \
+  --stemcell-version $STEMCELL_VERSION \
   $HAPROXY_FLAG \
   --infer-from-cloud \
   --vault-active \

@@ -169,6 +169,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           PRODUCT_PLUGIN: {{product_plugin}}
           SKIP_HAPROXY: {{skip-haproxy}}
+          STEMCELL_VERSION: {{stemcell-version}}
           VAULT_ADDR: {{vault_addr}}
           VAULT_HASH_IP: {{vault_hash_ip}}
           VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
@@ -181,8 +182,6 @@ jobs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
         - name: omg-product-bundle
-        - name: stemcells
-        - name: get-product-version
         outputs:
         - name: manifest
           path: ""
