@@ -10,7 +10,6 @@ groups:
   - notifications-ui
   - autoscaling
   - autoscaling-register-broker
-  - autoscaling-tests
 - name: deploy
   jobs:
   - get-product-version
@@ -19,7 +18,6 @@ groups:
   jobs:
   - smoke-tests
   - acceptance-tests
-  - autoscaling-tests
 - name: errands
   jobs:
   - push-apps-manager
@@ -295,7 +293,7 @@ jobs:
   plan:
     - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
-      passed: [acceptance-tests]
+      passed: [push-apps-manager]
       trigger: true
     - task: notifications
       config:
@@ -345,7 +343,7 @@ jobs:
   plan:
     - get: concourse-deploy-cloudfoundry
     - get: {{deployment-name}}
-      passed: [acceptance-tests]
+      passed: [notifications-ui]
       trigger: true
     - task: autoscaling
       config:
@@ -387,31 +385,6 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: autoscaling-register-broker
-          BOSH_TARGET: {{bosh-target}}
-        inputs:
-        - name: concourse-deploy-cloudfoundry
-        outputs:
-- name: autoscaling-tests
-  plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [autoscaling-register-broker]
-      trigger: true
-    - task: autoscaling-tests
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: virtmerlin/deploy-worker
-        run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/run-errand.sh
-        params:
-          BOSH_CACERT: {{bosh-cacert}}
-          BOSH_CLIENT: {{bosh-client-id}}
-          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
-          BOSH_ERRAND: autoscaling-tests
           BOSH_TARGET: {{bosh-target}}
         inputs:
         - name: concourse-deploy-cloudfoundry
