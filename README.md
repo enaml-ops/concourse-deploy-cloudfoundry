@@ -23,11 +23,15 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     cp deployment-props-sample.json deployment-props.json
     ```
 
-1. Edit `deployment-props.json`, adding the appropriate values.  This file is used to populate a `vault` hash.  It holds the BOSH credentials for both `omg` (username/password) and the Concourse `bosh-deployment` (UAA client) resource.  `omg` will also read other key/value pairs added here, matching them to command-line arguments.  For example, to add the `omg` plugin parameter `--syslog-address`, you could add `"syslog-address": "10.150.12.10"` here rather than modifying the manifest generation script in `ci/tasks`.
+1. Edit `deployment-props.json`, adding the appropriate values.
+
+    This file is used to populate a `vault` hash.  It holds the BOSH credentials for both `omg` (username/password) and the Concourse `bosh-deployment` (UAA client) resource.
 
     ```
     $EDITOR deployment-props.json
     ```
+
+    `omg` will also read other key/value pairs added here, matching them to command-line arguments.  For example, to add the `omg` plugin parameter `--syslog-address`, you could add `"syslog-address": "10.150.12.10"` here rather than modifying the manifest generation script in `ci/tasks`.
 
     All available keys can be listed by querying the plugin.  If not specified in `deployment-props.json`, default values will be used where possible.
 
@@ -35,11 +39,11 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     omg-linux deploy-product cloudfoundry-plugin-linux --help
     ```
 
-1. Load your deployment properties into `vault`.  `VAULT_HASH` here and `vault_hash_misc` in `pipeline-vars.yml` below must match.
+1. Load your deployment properties into `vault`.  `VAULT_HASH` you define here and `vault_hash_misc` in `pipeline-vars.yml` below must match.  You may consider using the `vault` hash here to hold common settings, referenced by multiple `omg`-based deployments.  In such a case, you might name the hash something like `secret/nonprod-common-props`.
 
     ```
     export VAULT_ADDR=http://YOUR_VAULT_ADDR:8200
-    export VAULT_HASH=secret/cf-staging-props
+    export VAULT_HASH=secret/cf-nonprod-props
     vault write $VAULT_HASH @deployment-props.json
     ```
 
