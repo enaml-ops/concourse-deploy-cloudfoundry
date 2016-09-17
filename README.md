@@ -23,7 +23,7 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     cp deployment-props-sample.json deployment-props.json
     ```
 
-1. Edit `deployment-props.json`, adding the appropriate values.
+1. Edit `deployment-props.json`, adding the appropriate values.  This file is used to populate a `vault` hash.  It holds the BOSH credentials for both `omg` (username/password) and the Concourse `bosh-deployment` (UAA client) resource.  `omg` will also read other key/value pairs added here, matching them to command-line arguments.  For example, to add the `omg` plugin parameter `--syslog-address`, you could add `"syslog-address": "10.150.12.10"` here rather than modifying the manifest generation script in `ci/tasks`.
 
     ```
     $EDITOR deployment-props.json
