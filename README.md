@@ -33,7 +33,8 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 
     `omg` will also read other key/value pairs added here, matching them to command-line arguments.  For example, to add the `omg` plugin parameter `--syslog-address`, you could add `"syslog-address": "10.150.12.10"` here rather than modifying the manifest generation script in `ci/tasks`.
 
-    All available keys can be listed by querying the plugin.  If not specified in `deployment-props.json`, default values will be used where possible.
+    All available parameters/keys can be listed by querying the plugin.  If not specified in `deployment-props.json`, default values will be used where possible.
+
 
     ```
     omg-linux deploy-product cloudfoundry-plugin-linux --help
