@@ -22,6 +22,12 @@ omg-cli/omg-linux deploy-product \
   --cflinuxfs2-release-version $(<cflinuxfs2-release/version) \
   --stemcell-version $(<stemcells/version) \
   --infer-from-cloud \
+  --nfs-disk-type large \
+  --nfs-vm-type medium \
+  --mysql-disk-type large \
+  --diego-brain-disk-type large \
+  --diego-cell-disk-type large \
+  --diego-cell-vm-type large.cpu \
   --vault-active \
   --vault-domain $VAULT_ADDR \
   --vault-hash-host $VAULT_HASH_HOSTVARS \
