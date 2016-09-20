@@ -12,36 +12,39 @@
 # Note pipeline-vars.yml is in .gitignore to help avoid checking sensitive
 # material into github.
 #
-# Notes on BOSH basic auth vs. uaa auth
-#   bosh-pass below is only used for basic auth
-#   bosh-user is either the username (basic auth) or client_id (uaa auth)
+# Notes on BOSH authentication:
+#   omg and the Concourse bosh-deployment resource use two different types
+#     of authentication mechanisms:
+#
+#   1. bosh-user and bosh-pass below below are for omg so it can authenticate
+#      to bosh and read the cloud-config when generating the manifest.
+#   2. bosh-client-id and bosh-client-secret is for the Concourse bosh-deployment
+#      resource so it can authenticate to do the deployment.
 #
 bosh-cacert: |
   -----BEGIN CERTIFICATE-----
   ...
   -----END CERTIFICATE-----
+bosh-client-id: BOSH_CLIENT_ID_WITH_client_credentials_GRANT_TYPE
+bosh-client-secret: BOSH_SHARED_SECRET
 bosh-pass: PASSWORD
-bosh-target: https://10.0.0.10
+bosh-url: https://10.0.0.10
 bosh-user: admin
-cloud_config_plugin: aws-cloudconfigplugin-linux
 concourse-url: http://10.0.0.31:8080
 concourse-user: USERNAME
 concourse-pass: PASSWORD
-deployment-name: staging
-elastic-runtime-version: 1.7.15
-skip-haproxy: false
-slack-channel: '#ops'
-slack-username: ops-user
-slack-icon-url: http://cl.ly/image/3e1h0H3H2s0P/concourse-logo.png
-stemcell: bosh-vsphere-esxi-ubuntu-trusty-go_agent
-stemcell-cpi-glob: '*vsphere*'
-stemcell-version: 3232.17
+deployment-name: cf-nonprod
+product-slug: elastic-runtime
+product-version: 1.7.15
 product_plugin: cloudfoundry-plugin-linux
 pivnet_api_token: API_TOKEN
+skip-haproxy: false
+stemcell-cpi-glob: '*vsphere*'
+stemcell-version: 3232.17
 vault_addr: http://10.0.0.8:8200
 vault_hash_hostvars: secret/cf-nonprod-hostvars
 vault_hash_ip: secret/cf-nonprod-ip
 vault_hash_keycert: secret/cf-nonprod-keycert
-vault_hash_misc: secret/cf-staging-props
+vault_hash_misc: secret/cf-nonprod-props
 vault_hash_password: secret/cf-nonprod-password
 vault_token: VAULT_TOKEN

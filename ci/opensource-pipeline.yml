@@ -66,7 +66,7 @@ resources:
     client_id: {{bosh-client-id}}
     client_secret: {{bosh-client-secret}}
     deployment: cf
-    target: {{bosh-target}}
+    target: {{bosh-url}}
 - name: slack
   type: slack-notification
   source:
@@ -172,7 +172,7 @@ jobs:
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
-      BOSH_TARGET: {{bosh-target}}
+      BOSH_TARGET: {{bosh-url}}
       BOSH_USERNAME: {{bosh-user}}
       BOSH_PASSWORD: {{bosh-pass}}
       BOSH_DEPLOYMENT_NAME: {{deployment-name}}
@@ -207,7 +207,7 @@ jobs:
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
-      BOSH_TARGET: {{bosh-target}}
+      BOSH_TARGET: {{bosh-url}}
       BOSH_USERNAME: {{bosh-user}}
       BOSH_PASSWORD: {{bosh-pass}}
       BOSH_DEPLOYMENT_NAME: {{deployment-name}}

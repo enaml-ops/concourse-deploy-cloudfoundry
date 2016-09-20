@@ -30,13 +30,13 @@ resources:
 - name: daily
   type: time
   source: {interval: 24h}
-- name: elastic-runtime
+- name: {{product-slug}}
   type: pivnet
   check_every: 4h
   source:
     api_token: {{pivnet_api_token}}
-    product_slug: elastic-runtime
-    product_version: {{elastic-runtime-version}}
+    product_slug: {{product-slug}}
+    product_version: {{product-version}}
     sort_by: semver
 - name: every-4hrs
   type: time
@@ -66,7 +66,7 @@ resources:
     client_id: {{bosh-client-id}}
     client_secret: {{bosh-client-secret}}
     deployment: cf
-    target: {{bosh-target}}
+    target: {{bosh-url}}
 - name: stemcells
   type: pivnet
   source:
@@ -84,16 +84,17 @@ resource_types:
 jobs:
 - name: get-product-version
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: omg-cli
-      params:
-        globs:
-        - omg-linux
-    - get: omg-product-bundle
-      trigger: true
-      params:
-        globs:
-        - cloudfoundry-plugin-linux
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: omg-cli
+        params:
+          globs:
+          - omg-linux
+      - get: omg-product-bundle
+        trigger: true
+        params:
+          globs:
+          - cloudfoundry-plugin-linux
     - task: get-product-version
       config:
         platform: linux
@@ -123,6 +124,7 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/update-pipeline.sh
         params:
+          PRODUCT: {{product-slug}}
           PIPELINE_NAME: deploy-pcf
           CONCOURSE_URL: {{concourse-url}}
           CONCOURSE_USER: {{concourse-user}}
@@ -133,27 +135,28 @@ jobs:
         outputs:
 - name: deploy
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: omg-cli
-      passed: [get-product-version]
-      params:
-        globs:
-        - omg-linux
-    - get: omg-product-bundle
-      passed: [get-product-version]
-      trigger: true
-      params:
-        globs:
-        - cloudfoundry-plugin-linux
-    - get: elastic-runtime
-      params:
-        globs:
-        - cf-*
-    - get: stemcells
-      trigger: true
-      params:
-        globs:
-        - {{stemcell-cpi-glob}}
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: omg-cli
+        passed: [get-product-version]
+        params:
+          globs:
+          - omg-linux
+      - get: omg-product-bundle
+        passed: [get-product-version]
+        trigger: true
+        params:
+          globs:
+          - cloudfoundry-plugin-linux
+      - get: {{product-slug}}
+        params:
+          globs:
+          - cf-*
+      - get: stemcells
+        trigger: true
+        params:
+          globs:
+          - {{stemcell-cpi-glob}}
     - task: generate-manifest
       config:
         platform: linux
@@ -195,13 +198,13 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/extract-tile.sh
         params:
-          PRODUCT_DIR: elastic-runtime
-          OUTPUT_DIR: elastic-runtime-extracted
+          PRODUCT_DIR: {{product-slug}}
+          OUTPUT_DIR: product-extracted
         inputs:
         - name: concourse-deploy-cloudfoundry
-        - name: elastic-runtime
+        - name: {{product-slug}}
         outputs:
-        - name: elastic-runtime-extracted
+        - name: product-extracted
           path: ""
     - put: {{deployment-name}}
       params:
@@ -209,15 +212,16 @@ jobs:
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - elastic-runtime-extracted/releases/*.tgz
+        - product-extracted/releases/*.tgz
 - name: smoke-tests
   plan:
-    - get: every-4hrs
-      trigger: true
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [deploy]
-      trigger: true
+    - aggregate:
+      - get: every-4hrs
+        trigger: true
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [deploy]
+        trigger: true
     - task: smoke-tests
       config:
         platform: linux
@@ -233,18 +237,19 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: smoke-tests
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
 - name: acceptance-tests
   plan:
-    - get: daily
-      trigger: true
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [smoke-tests]
-      trigger: true
+    - aggregate:
+      - get: daily
+        trigger: true
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [smoke-tests]
+        trigger: true
     - task: acceptance-tests
       config:
         platform: linux
@@ -260,16 +265,17 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: acceptance-tests
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
 - name: push-apps-manager
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [acceptance-tests]
-      trigger: true
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [acceptance-tests]
+        trigger: true
     - task: push-apps-manager
       config:
         platform: linux
@@ -285,16 +291,17 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: push-apps-manager
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
 - name: notifications
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [push-apps-manager]
-      trigger: true
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [push-apps-manager]
+        trigger: true
     - task: notifications
       config:
         platform: linux
@@ -310,16 +317,17 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: notifications
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
 - name: notifications-ui
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [notifications]
-      trigger: true
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [notifications]
+        trigger: true
     - task: notifications-ui
       config:
         platform: linux
@@ -335,16 +343,17 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: notifications-ui
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
 - name: autoscaling
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [notifications-ui]
-      trigger: true
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [notifications-ui]
+        trigger: true
     - task: autoscaling
       config:
         platform: linux
@@ -360,16 +369,17 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: autoscaling
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
 - name: autoscaling-register-broker
   plan:
-    - get: concourse-deploy-cloudfoundry
-    - get: {{deployment-name}}
-      passed: [autoscaling]
-      trigger: true
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: {{deployment-name}}
+        passed: [autoscaling]
+        trigger: true
     - task: autoscaling-register-broker
       config:
         platform: linux
@@ -385,7 +395,7 @@ jobs:
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_DEPLOYMENT_NAME: cf
           BOSH_ERRAND: autoscaling-register-broker
-          BOSH_TARGET: {{bosh-target}}
+          BOSH_TARGET: {{bosh-url}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         outputs:
