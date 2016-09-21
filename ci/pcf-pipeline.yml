@@ -1,6 +1,7 @@
 groups:
 - name: all
   jobs:
+  - populate-or-rotate-vault
   - get-product-version
   - deploy
   - smoke-tests
@@ -12,6 +13,7 @@ groups:
   - autoscaling-register-broker
 - name: deploy
   jobs:
+  - populate-or-rotate-vault
   - get-product-version
   - deploy
 - name: tests
@@ -82,6 +84,36 @@ resource_types:
     tag: latest-final
 
 jobs:
+- name: populate-or-rotate-vault
+  plan:
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+      - get: omg-cli
+        params:
+          globs:
+          - omg-linux
+      - get: omg-product-bundle
+        trigger: true
+        params:
+          globs:
+          - cloudfoundry-plugin-linux
+    - task: populate-or-rotate
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/populate-or-rotate-vault.sh
+        params:
+          PRODUCT_PLUGIN: {{product_plugin}}
+          SYSTEM_DOMAIN: {{system-domain}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        - name: omg-cli
+        - name: omg-product-bundle
+        outputs:
 - name: get-product-version
   plan:
     - aggregate:
@@ -95,6 +127,7 @@ jobs:
         params:
           globs:
           - cloudfoundry-plugin-linux
+        passed: [populate-or-rotate-vault]
     - task: get-product-version
       config:
         platform: linux

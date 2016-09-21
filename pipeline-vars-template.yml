@@ -30,6 +30,7 @@ bosh-client-secret: BOSH_SHARED_SECRET
 bosh-pass: PASSWORD
 bosh-url: https://10.0.0.10
 bosh-user: admin
+system-domain: system.example.com
 concourse-url: http://10.0.0.31:8080
 concourse-user: USERNAME
 concourse-pass: PASSWORD

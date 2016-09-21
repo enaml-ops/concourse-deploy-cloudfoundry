@@ -18,9 +18,9 @@ omg-cli/omg-linux deploy-product \
   --print-manifest \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
-  --stemcell-version $STEMCELL_VERSION \
   $HAPROXY_FLAG \
   --infer-from-cloud \
+  --stemcell-version $STEMCELL_VERSION \
   --vault-active \
   --vault-domain $VAULT_ADDR \
   --vault-hash-host $VAULT_HASH_HOSTVARS \
