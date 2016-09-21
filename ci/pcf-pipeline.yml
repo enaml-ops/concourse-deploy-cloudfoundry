@@ -212,7 +212,7 @@ jobs:
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - product-extracted/releases/*.tgz
+        - product-extracted/releases/[a-r]*.tgz
 - name: smoke-tests
   plan:
     - aggregate:
