@@ -34,7 +34,7 @@ resources:
 - name: stemcell
   type: bosh-io-stemcell
   source:
-    name: {{stemcell}}
+    name: {{stemcell-name}}
 - name: concourse-deploy-cloudfoundry
   type: git
   check_every: 1h
@@ -70,7 +70,7 @@ resources:
 - name: slack
   type: slack-notification
   source:
-    url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
+    url: {{slack-url}}
 
 resource_types:
 - name: slack-notification
@@ -106,17 +106,17 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/tasks/generate-manifest.sh
         params:
-          BOSH_CLIENT: {{bosh-user}}
-          BOSH_CLIENT_SECRET: {{bosh-pass}}
+          BOSH_CLIENT: {{bosh-client-id}}
+          BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_CACERT: {{bosh-cacert}}
-          CLOUD_CONFIG_PLUGIN: {{cloud_config_plugin}}
-          PRODUCT_PLUGIN: {{product_plugin}}
-          VAULT_ADDR: {{vault_addr}}
-          VAULT_HASH_IP: {{vault_hash_ip}}
-          VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
-          VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
-          VAULT_HASH_PASSWORD: {{vault_hash_password}}
-          VAULT_TOKEN: {{vault_token}}
+          CLOUD_CONFIG_PLUGIN: {{cloud-config-plugin}}
+          PRODUCT_PLUGIN: {{product-plugin}}
+          VAULT_ADDR: {{vault-addr}}
+          VAULT_HASH_IP: {{vault-hash-ip}}
+          VAULT_HASH_HOSTVARS: {{vault-hash-hostvars}}
+          VAULT_HASH_KEYCERT: {{vault-hash-keycert}}
+          VAULT_HASH_PASSWORD: {{vault-hash-password}}
+          VAULT_TOKEN: {{vault-token}}
         inputs:
         - name: cf-release
         - name: garden-release

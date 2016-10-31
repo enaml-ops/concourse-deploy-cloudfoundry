@@ -1,3 +1,4 @@
 **/.DS_Store
 **/pipeline-vars.yml
 **/deployment-props.json
+oss-pipeline-vars.yml

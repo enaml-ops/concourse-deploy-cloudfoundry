@@ -1,0 +1,48 @@
+#
+# Copy this file to pipeline-vars.yml, add appropriate values, and supply
+# to fly when creating or updating the concourse pipeline.
+#
+# For example:
+#
+#   fly -t TARGET set-pipeline \
+#     -p deploy-pcf \
+#     -c ci/pcf-pipeline.yml \
+#     -l pipeline-vars.yml
+#
+# Note pipeline-vars.yml is in .gitignore to help avoid checking sensitive
+# material into github.
+#
+# Notes on BOSH authentication:
+#   omg and the Concourse bosh-deployment resource use two different types
+#     of authentication mechanisms:
+#
+#   1. bosh-user and bosh-pass below below are for omg so it can authenticate
+#      to bosh and read the cloud-config when generating the manifest.
+#   2. bosh-client-id and bosh-client-secret is for the Concourse bosh-deployment
+#      resource so it can authenticate to do the deployment.
+#
+bosh-cacert: |
+  -----BEGIN CERTIFICATE-----
+  ...
+  -----END CERTIFICATE-----
+bosh-client-id: director 
+bosh-client-secret: BOSH_SHARED_SECRET
+bosh-pass: PASSWORD
+bosh-url: https://10.0.0.10
+bosh-user: director
+system-domain: system.example.com
+deployment-name: oss-cf-nonprod
+product-plugin: cloudfoundry-plugin-linux
+skip-haproxy: false
+stemcell-name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
+vault-addr: http://10.0.0.8:8200
+vault-hash-hostvars: secret/cf-nonprod-hostvars
+vault-hash-ip: secret/cf-nonprod-ip
+vault-hash-keycert: secret/cf-nonprod-keycert
+vault-hash-misc: secret/cf-nonprod-props
+vault-hash-password: secret/cf-nonprod-password
+vault-token: VAULT_TOKEN
+slack-url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
+slack-channel: my-channel
+slack-username: whoami
+slack-icon-url: img.com
