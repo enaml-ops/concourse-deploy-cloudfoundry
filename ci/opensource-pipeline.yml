@@ -93,7 +93,7 @@ jobs:
     - get: omg-cli-product-bundle
       params:
         globs:
-        - cloudfoundry-plugin-*
+        - oss-cf-plugin-*
       trigger: true
     - get: stemcell
     - task: generate-manifest
