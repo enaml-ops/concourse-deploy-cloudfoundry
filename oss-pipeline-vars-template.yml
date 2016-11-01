@@ -46,3 +46,4 @@ slack-url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXX
 slack-channel: my-channel
 slack-username: whoami
 slack-icon-url: img.com
+cloud-config-plugin: vsphere-cloudconfigplugin-linux

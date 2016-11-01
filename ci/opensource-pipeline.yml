@@ -1,4 +1,12 @@
-groups: []
+groups:
+- name: all
+  jobs:
+  - populate-or-rotate-vault
+  - deploy
+- name: deploy
+  jobs:
+  - populate-or-rotate-vault
+  - deploy
 
 resources:
 - name: cf-release
@@ -47,7 +55,7 @@ resources:
   source:
     user: enaml-ops
     repository: omg-cli
-- name: omg-cli-product-bundle
+- name: omg-product-bundle
   type: github-release
   check_every: 1h
   source:
@@ -79,6 +87,43 @@ resource_types:
     repository: cfcommunity/slack-notification-resource
 
 jobs:
+- name: populate-or-rotate-vault
+  plan:
+    - get: concourse-deploy-cloudfoundry
+    - get: omg-cli
+      params:
+        globs:
+        - omg-linux
+    - get: omg-product-bundle
+      trigger: true
+      params:
+        globs:
+        - {{product-plugin}} 
+    - task: populate-or-rotate
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/oss-tasks/populate-or-rotate-vault.sh
+        params:
+          SKIP_HAPROXY: {{skip-haproxy}}
+          PRODUCT_PLUGIN: {{product-plugin}}
+          SYSTEM_DOMAIN: {{system-domain}}
+          VAULT_ADDR: {{vault-addr}}
+          VAULT_HASH_IP: {{vault-hash-ip}}
+          VAULT_HASH_HOSTVARS: {{vault-hash-hostvars}}
+          VAULT_HASH_KEYCERT: {{vault-hash-keycert}}
+          VAULT_HASH_MISC: {{vault-hash-misc}}
+          VAULT_HASH_PASSWORD: {{vault-hash-password}}
+          VAULT_TOKEN: {{vault-token}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
+        - name: omg-cli
+        - name: omg-product-bundle
+        outputs:
 - name: deploy
   plan:
     - get: cf-release
@@ -90,10 +135,13 @@ jobs:
     - get: stemcell
     - get: concourse-deploy-cloudfoundry
     - get: omg-cli
-    - get: omg-cli-product-bundle
       params:
         globs:
-        - oss-cf-plugin-*
+        - omg-linux
+    - get: omg-product-bundle
+      params:
+        globs:
+        - oss-cf-plugin-linux
       trigger: true
     - get: stemcell
     - task: generate-manifest
@@ -104,7 +152,7 @@ jobs:
           source:
             repository: virtmerlin/deploy-worker
         run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/generate-manifest.sh
+          path: concourse-deploy-cloudfoundry/ci/oss-tasks/generate-manifest.sh
         params:
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
