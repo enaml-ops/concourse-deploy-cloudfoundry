@@ -11,47 +11,49 @@ groups:
 resources:
 - name: cf-release
   type: bosh-io-release
-  check_every: 1h
+  check_every: 1m
   source:
     repository: cloudfoundry/cf-release
 - name: garden-release
   type: bosh-io-release
-  check_every: 1h
+  check_every: 1m
   source:
     repository: cloudfoundry/garden-linux-release
 - name: diego-release
   type: bosh-io-release
-  check_every: 1h
+  check_every: 1m
   source:
     repository: cloudfoundry/diego-release
 - name: etcd-release
   type: bosh-io-release
-  check_every: 1h
+  check_every: 1m
   source:
     repository: cloudfoundry-incubator/etcd-release
 - name: cf-mysql-release
   type: bosh-io-release
-  check_every: 1h
+  check_every: 1m
   source:
     repository: cloudfoundry/cf-mysql-release
 - name: cflinuxfs2-release
   type: bosh-io-release
-  check_every: 1h
+  check_every: 1m
   source:
     repository: cloudfoundry/cflinuxfs2-rootfs-release
 - name: stemcell
   type: bosh-io-stemcell
+  check_every: 1m
   source:
+    force_regular: true
     name: {{stemcell-name}}
 - name: concourse-deploy-cloudfoundry
   type: git
-  check_every: 1h
+  check_every: 1m
   source:
     uri: https://github.com/enaml-ops/concourse-deploy-cloudfoundry
     branch: master
 - name: omg-cli
   type: github-release
-  check_every: 1h
+  check_every: 1m
   source:
     user: enaml-ops
     repository: omg-cli
@@ -126,24 +128,24 @@ jobs:
         outputs:
 - name: deploy
   plan:
-    - get: cf-release
-    - get: garden-release
-    - get: diego-release
-    - get: etcd-release
-    - get: cf-mysql-release
-    - get: cflinuxfs2-release
-    - get: stemcell
-    - get: concourse-deploy-cloudfoundry
-    - get: omg-cli
-      params:
-        globs:
-        - omg-linux
-    - get: omg-product-bundle
-      params:
-        globs:
-        - oss-cf-plugin-linux
-      trigger: true
-    - get: stemcell
+    - aggregate:
+      - get: cf-release
+      - get: garden-release
+      - get: diego-release
+      - get: etcd-release
+      - get: cf-mysql-release
+      - get: cflinuxfs2-release
+      - get: stemcell
+      - get: concourse-deploy-cloudfoundry
+      - get: omg-cli
+        params:
+          globs:
+          - omg-linux
+      - get: omg-product-bundle
+        params:
+          globs:
+          - oss-cf-plugin-linux
+        trigger: true
     - task: generate-manifest
       config:
         platform: linux
