@@ -2,3 +2,7 @@
 **/pipeline-vars.yml
 **/deployment-props.json
 oss-pipeline-vars.yml
+**/deployment-net.json
+**/setup-vault.sh
+setup/
+!.keep

@@ -1,0 +1,16 @@
+{
+  "app-domain": "",
+  "nfs-allow-from-network-cidr": "",
+  "nfs-ip": "",
+  "mysql-ip": "",
+  "diego-cell-ip": "",
+  "consul-ip": "",
+  "doppler-ip": "",
+  "mysql-proxy-ip": "",
+  "loggregator-traffic-controller-ip": "",
+  "nats-machine-ip": "",
+  "etcd-machine-ip": "",
+  "diego-brain-ip": "",
+  "diego-db-ip": "",
+  "router-ip": ""
+}
