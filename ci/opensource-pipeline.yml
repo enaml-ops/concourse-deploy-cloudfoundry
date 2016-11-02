@@ -165,6 +165,7 @@ jobs:
           VAULT_HASH_IP: {{vault-hash-ip}}
           VAULT_HASH_HOSTVARS: {{vault-hash-hostvars}}
           VAULT_HASH_KEYCERT: {{vault-hash-keycert}}
+          VAULT_HASH_MISC: {{vault-hash-misc}}
           VAULT_HASH_PASSWORD: {{vault-hash-password}}
           VAULT_TOKEN: {{vault-token}}
         inputs:

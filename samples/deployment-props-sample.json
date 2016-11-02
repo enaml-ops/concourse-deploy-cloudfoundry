@@ -9,6 +9,7 @@
   "nfs-disk-type": "large",
   "nfs-vm-type": "medium",
   "app-domain": "",
+  "system-domain": "",
   "nfs-allow-from-network-cidr": "",
   "nfs-ip": "",
   "mysql-ip": "",
