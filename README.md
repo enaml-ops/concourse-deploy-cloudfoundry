@@ -40,10 +40,6 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     omg-linux deploy-product cloudfoundry-plugin-linux --help
     ```
 
-1. Edit `setup/deployment-net.json`
-    This file is used to populate vault with network related values (ips,
-    domains, etc)
-
 1. Edit `setup/setup-vault.sh` 
     This file is used to populate the proper hashes with your previously defined
     vault config files.

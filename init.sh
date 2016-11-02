@@ -1,8 +1,3 @@
-if [ ! -f setup/deployment-net.json ]; then
-  echo "Creating setup/deployment-net.json"
-  cp samples/deployment-net-sample.json setup/deployment-net.json
-fi
-
 if [ ! -f setup/deployment-props.json ]; then
   echo "Creating setup/deployment-props.json"
   cp samples/deployment-props-sample.json setup/deployment-props.json
