@@ -26,7 +26,6 @@ omg-cli/omg-linux deploy-product \
   --garden-release-version $(<garden-release/version) \
   $HAPROXY_FLAG \
   --infer-from-cloud \
-  --stemcell-version $(<stemcells/version) \
   --vault-active \
   --vault-domain $VAULT_ADDR \
   --vault-hash-host $VAULT_HASH_HOSTVARS \

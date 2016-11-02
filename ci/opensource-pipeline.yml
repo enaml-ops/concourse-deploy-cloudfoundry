@@ -175,7 +175,7 @@ jobs:
         - name: stemcell
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
-        - name: omg-cli-product-bundle
+        - name: omg-product-bundle
         outputs:
         - name: manifest
           path: ""
