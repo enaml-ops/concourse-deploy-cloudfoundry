@@ -111,6 +111,7 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/oss-tasks/populate-or-rotate-vault.sh
         params:
+          STEMCELL_OS: {{stemcell-os}}
           SKIP_HAPROXY: {{skip-haproxy}}
           PRODUCT_PLUGIN: {{product-plugin}}
           SYSTEM_DOMAIN: {{system-domain}}
@@ -156,10 +157,10 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/oss-tasks/generate-manifest.sh
         params:
+          SKIP_HAPROXY: {{skip-haproxy}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
           BOSH_CACERT: {{bosh-cacert}}
-          CLOUD_CONFIG_PLUGIN: {{cloud-config-plugin}}
           PRODUCT_PLUGIN: {{product-plugin}}
           VAULT_ADDR: {{vault-addr}}
           VAULT_HASH_IP: {{vault-hash-ip}}
@@ -194,24 +195,24 @@ jobs:
         - etcd-release/*.tgz
         - cf-mysql-release/*.tgz
         - cflinuxfs2-release/*.tgz
-      on_success:
-        put: slack
-        params:
-          text: |
-            :white_check_mark: Successfully deployed {{deployment-name}} CF
-            <https://$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-          channel: {{slack-channel}}
-          username: {{slack-username}}
-          icon_url: {{slack-icon-url}}
-      on_failure:
-        put: slack
-        params:
-          text: |
-            :x: FAILED to deploy {{deployment-name}} CF
-            <https://$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-          channel: {{slack-channel}}
-          username: {{slack-username}}
-          icon_url: {{slack-icon-url}}
+          #      on_success:
+          #        put: slack
+          #        params:
+          #          text: |
+          #            :white_check_mark: Successfully deployed {{deployment-name}} CF
+          #            <https://$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          #          channel: {{slack-channel}}
+          #          username: {{slack-username}}
+          #          icon_url: {{slack-icon-url}}
+          #      on_failure:
+          #        put: slack
+          #        params:
+          #          text: |
+          #            :x: FAILED to deploy {{deployment-name}} CF
+          #            <https://$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          #          channel: {{slack-channel}}
+          #          username: {{slack-username}}
+          #          icon_url: {{slack-icon-url}}
 - name: run-smoke-tests
   plan:
   - aggregate:

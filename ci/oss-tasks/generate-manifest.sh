@@ -27,6 +27,7 @@ omg-cli/omg-linux deploy-product \
   $HAPROXY_FLAG \
   --infer-from-cloud \
   --vault-active \
+  --stemcell-name $STEMCELL_OS \
   --vault-domain $VAULT_ADDR \
   --vault-hash-host $VAULT_HASH_HOSTVARS \
   --vault-hash-ip $VAULT_HASH_IP \

@@ -35,6 +35,7 @@ deployment-name: oss-cf-nonprod
 product-plugin: cloudfoundry-plugin-linux
 skip-haproxy: false
 stemcell-name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
+stemcell-os: ubuntu-trusty
 vault-addr: http://10.0.0.8:8200
 vault-hash-hostvars: secret/cf-nonprod-hostvars
 vault-hash-ip: secret/cf-nonprod-ip
@@ -46,4 +47,3 @@ slack-url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXX
 slack-channel: my-channel
 slack-username: whoami
 slack-icon-url: img.com
-cloud-config-plugin: vsphere-cloudconfigplugin-linux
