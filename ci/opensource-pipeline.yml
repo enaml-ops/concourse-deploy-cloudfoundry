@@ -157,6 +157,7 @@ jobs:
         run:
           path: concourse-deploy-cloudfoundry/ci/oss-tasks/generate-manifest.sh
         params:
+          STEMCELL_OS: {{stemcell-os}}
           SKIP_HAPROXY: {{skip-haproxy}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
