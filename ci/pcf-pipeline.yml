@@ -109,13 +109,13 @@ jobs:
         params:
           PRODUCT_PLUGIN: {{product_plugin}}
           SYSTEM_DOMAIN: {{system-domain}}
-          VAULT_ADDR: {{vault_addr}}
-          VAULT_HASH_IP: {{vault_hash_ip}}
-          VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
-          VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
-          VAULT_HASH_MISC: {{vault_hash_misc}}
-          VAULT_HASH_PASSWORD: {{vault_hash_password}}
-          VAULT_TOKEN: {{vault_token}}
+          VAULT_ADDR: {{vault-addr}}
+          VAULT_HASH_IP: {{vault-hash-ip}}
+          VAULT_HASH_HOSTVARS: {{vault-hash-hostvars}}
+          VAULT_HASH_KEYCERT: {{vault-hash-keycert}}
+          VAULT_HASH_MISC: {{vault-hash-misc}}
+          VAULT_HASH_PASSWORD: {{vault-hash-password}}
+          VAULT_TOKEN: {{vault-token}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
@@ -213,13 +213,13 @@ jobs:
           PRODUCT_PLUGIN: {{product_plugin}}
           SKIP_HAPROXY: {{skip-haproxy}}
           STEMCELL_VERSION: {{stemcell-version}}
-          VAULT_ADDR: {{vault_addr}}
-          VAULT_HASH_IP: {{vault_hash_ip}}
-          VAULT_HASH_HOSTVARS: {{vault_hash_hostvars}}
-          VAULT_HASH_KEYCERT: {{vault_hash_keycert}}
-          VAULT_HASH_MISC: {{vault_hash_misc}}
-          VAULT_HASH_PASSWORD: {{vault_hash_password}}
-          VAULT_TOKEN: {{vault_token}}
+          VAULT_ADDR: {{vault-addr}}
+          VAULT_HASH_IP: {{vault-hash-ip}}
+          VAULT_HASH_HOSTVARS: {{vault-hash-hostvars}}
+          VAULT_HASH_KEYCERT: {{vault-hash-keycert}}
+          VAULT_HASH_MISC: {{vault-hash-misc}}
+          VAULT_HASH_PASSWORD: {{vault-hash-password}}
+          VAULT_TOKEN: {{vault-token}}
           OUTPUT_DIR: manifest
         inputs:
         - name: concourse-deploy-cloudfoundry
