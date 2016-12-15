@@ -30,7 +30,8 @@ bosh-client-secret: BOSH_SHARED_SECRET
 bosh-pass: PASSWORD
 bosh-url: https://10.0.0.10
 bosh-user: director
-system-domain: system.example.com
+app-domain: apps.1.2.3.4.xip.io
+system-domain: sys.1.2.3.4.xip.io
 deployment-name: oss-cf-nonprod
 product-plugin: cloudfoundry-plugin-linux
 skip-haproxy: false

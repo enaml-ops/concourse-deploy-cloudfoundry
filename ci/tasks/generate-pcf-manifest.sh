@@ -4,7 +4,7 @@ chmod +x omg-cli/omg-linux
 
 omg-cli/omg-linux register-plugin \
   -type product \
-  -pluginpath omg-product-bundle/$PRODUCT_PLUGIN
+  -pluginpath ert-plugin/$PRODUCT_PLUGIN
 
 if [[ $SKIP_HAPROXY == "false" ]]; then
   HAPROXY_FLAG="--skip-haproxy=false"

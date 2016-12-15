@@ -36,12 +36,12 @@ concourse-user: USERNAME
 concourse-pass: PASSWORD
 deployment-name: cf-nonprod
 product-slug: elastic-runtime
-product-version: 1.7.15
-product_plugin: cloudfoundry-plugin-linux
+product-version: 1.8.21
+product_plugin: ert-1-8-linux
 pivnet_api_token: API_TOKEN
 skip-haproxy: false
 stemcell-cpi-glob: '*vsphere*'
-stemcell-version: 3232.17
+stemcell-version: 3263.12
 vault_addr: http://10.0.0.8:8200
 vault_hash_hostvars: secret/cf-nonprod-hostvars
 vault_hash_ip: secret/cf-nonprod-ip

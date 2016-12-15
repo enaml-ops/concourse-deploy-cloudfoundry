@@ -37,7 +37,7 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 
 
     ```
-    omg-linux deploy-product cloudfoundry-plugin-linux --help
+    omg-linux deploy-product ert-1-8-linux --help
     ```
 
 1. Edit `setup/setup-vault.sh` 

@@ -4,7 +4,7 @@ chmod +x omg-cli/omg-linux
 
 omg-cli/omg-linux register-plugin \
   -type product \
-  -pluginpath omg-product-bundle/$PRODUCT_PLUGIN
+  -pluginpath ert-plugin/$PRODUCT_PLUGIN
 
 PRODUCT_NAME=$(printf ${PRODUCT_PLUGIN%%-*})
 
