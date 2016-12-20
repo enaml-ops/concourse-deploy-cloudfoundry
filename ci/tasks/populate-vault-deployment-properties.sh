@@ -4,7 +4,7 @@
 #
 #
 
-echo "${VAULT_JSON_STRING}" > deployment-props.json
+echo "${VAULT_PROPERTIES_JSON}" > deployment-props.json
 echo "${BOSH_CACERT}" > rootCA.pem
 
 echo "requires files (rootCA.pem, director.pwd, deployment-props.json)"
