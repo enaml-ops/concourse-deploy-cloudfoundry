@@ -11,6 +11,11 @@ groups:
   - notifications-ui
   - autoscaling
   - autoscaling-register-broker
+  - load-vault-properties
+- name: vault-interactions
+  jobs:
+  - populate-or-rotate-vault
+  - load-vault-properties
 - name: deploy
   jobs:
   - populate-or-rotate-vault
@@ -84,6 +89,28 @@ resource_types:
     tag: latest-final
 
 jobs:
+- name: load-vault-properties
+  plan: 
+    - aggregate:
+      - get: concourse-deploy-cloudfoundry
+    - task: load-vault-properties 
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: virtmerlin/deploy-worker
+        run:
+          path: concourse-deploy-cloudfoundry/ci/tasks/populate-vault-deployment-properties.sh
+        params:
+          VAULT_ADDR: {{vault-addr}}
+          VAULT_HASH_MISC: {{vault-hash-misc}}
+          VAULT_TOKEN: {{vault-token}}
+          VAULT_PROPERTIES_JSON: {{vault-json-string}}
+          BOSH_CLIENT_SECRET: {{bosh-pass}}
+          BOSH_CACERT: {{bosh-cacert}}
+        inputs:
+        - name: concourse-deploy-cloudfoundry
 - name: populate-or-rotate-vault
   plan:
     - aggregate:

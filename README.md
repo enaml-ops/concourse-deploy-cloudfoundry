@@ -59,13 +59,13 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 1. Create or update the pipeline, either opensource or PCF.
 
     ```
-    fly -t CF-Concourse set-pipeline -p deploy-oss-cloudfoundry -c ci/opensource-pipeline.yml -l setup/oss-pipeline-vars.yml
+    fly -t CF-Concourse set-pipeline -p deploy-oss-cloudfoundry -c ci/opensource-pipeline.yml -l setup/oss-pipeline-vars.yml --var "vault_json_string=$(cat setup/deployment-props.json)"
     ```
 
     _or_
 
     ```
-    fly -t CF-Concourse set-pipeline -p deploy-pct-ert -c ci/pcf-pipeline.yml -l setup/pcf-pipeline-vars.yml
+    fly -t CF-Concourse set-pipeline -p deploy-pcf-ert-1.8 -c ci/pcf-pipeline.yml -l setup/pcf-pipeline-vars.yml --var "vault_json_string=$(cat setup/deployment-props.json)"
     ```
 
 1. Delete or move `setup/*` to a secure location.
