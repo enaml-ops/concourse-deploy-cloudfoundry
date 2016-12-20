@@ -143,6 +143,7 @@ jobs:
           VAULT_HASH_MISC: {{vault-hash-misc}}
           VAULT_HASH_PASSWORD: {{vault-hash-password}}
           VAULT_TOKEN: {{vault-token}}
+          STEMCELL_VERSION: {{stemcell-version}}
         inputs:
         - name: concourse-deploy-cloudfoundry
         - name: omg-cli
