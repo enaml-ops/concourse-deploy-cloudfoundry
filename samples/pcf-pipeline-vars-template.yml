@@ -38,8 +38,8 @@ concourse-pass: PASSWORD
 deployment-name: cf-nonprod
 product-slug: elastic-runtime
 product-version: 1.8.21
-product_plugin: ert-1-8-linux
-pivnet_api_token: API_TOKEN
+product-plugin: ert-1-8-linux
+pivnet-api-token: API_TOKEN
 skip-haproxy: false
 stemcell-cpi-glob: '*vsphere*'
 stemcell-version: 3263.12

@@ -15,7 +15,7 @@ fi
 
 if [ ! -f setup/pcf-pipeline-vars.yml ]; then
   echo "Creating setup/pcf-pipeline-vars.yml"
-  cp samples/pipeline-vars-template.yml setup/pcf-pipeline-vars.yml
+  cp samples/pcf-pipeline-vars-template.yml setup/pcf-pipeline-vars.yml
 fi
 echo "!!!!!!!!!!!!!      BEFORE PROCEEDING      !!!!!!!!!!!!!!!!!"
 echo "PLEASE MODIFY THE VALUES IN THE FILES IN the 'setup' directory TO MATCH YOUR SYSTEM"
