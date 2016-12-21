@@ -182,25 +182,25 @@ jobs:
         outputs:
         - name: versions
           path: ""
-    - task: update-pipeline
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: virtmerlin/deploy-worker
-        run:
-          path: concourse-deploy-cloudfoundry/ci/tasks/update-pipeline.sh
-        params:
-          PRODUCT: {{product-slug}}
-          PIPELINE_NAME: deploy-pcf
-          CONCOURSE_URL: {{concourse-url}}
-          CONCOURSE_USER: {{concourse-user}}
-          CONCOURSE_PASS: {{concourse-pass}}
-        inputs:
-        - name: concourse-deploy-cloudfoundry
-        - name: versions
-        outputs:
+          #    - task: update-pipeline
+          #      config:
+          #        platform: linux
+          #        image_resource:
+          #          type: docker-image
+          #          source:
+          #            repository: virtmerlin/deploy-worker
+          #        run:
+          #          path: concourse-deploy-cloudfoundry/ci/tasks/update-pipeline.sh
+          #        params:
+          #          PRODUCT: {{product-slug}}
+          #          PIPELINE_NAME: deploy-pcf
+          #          CONCOURSE_URL: {{concourse-url}}
+          #          CONCOURSE_USER: {{concourse-user}}
+          #          CONCOURSE_PASS: {{concourse-pass}}
+          #        inputs:
+          #        - name: concourse-deploy-cloudfoundry
+          #        - name: versions
+          #        outputs:
 - name: deploy
   plan:
     - aggregate:
@@ -280,7 +280,15 @@ jobs:
         stemcells:
         - stemcells/bosh-stemcell*.tgz
         releases:
-        - product-extracted/releases/[a-r]*.tgz
+        - product-extracted/releases/cf*.tgz
+        - product-extracted/releases/diego*.tgz
+        - product-extracted/releases/garden-runc*.tgz
+        - product-extracted/releases/cflinuxfs2*.tgz
+        - product-extracted/releases/etcd*.tgz
+        - product-extracted/releases/mysql-backup*.tgz
+        - product-extracted/releases/push-apps-manager*.tgz
+        - product-extracted/releases/cf-autoscaling*.tgz
+        - product-extracted/releases/notifications*.tgz
 - name: smoke-tests
   plan:
     - aggregate:
