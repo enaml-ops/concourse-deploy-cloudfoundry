@@ -120,7 +120,6 @@ jobs:
           globs:
           - omg-linux
       - get: ert-plugin
-        trigger: true
         params:
           globs:
           - ert-1-8-linux
@@ -162,7 +161,6 @@ jobs:
         params:
           globs:
           - ert-1-8-linux
-        passed: [populate-or-rotate-vault]
     - task: get-product-version
       config:
         platform: linux
