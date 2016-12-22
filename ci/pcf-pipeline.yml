@@ -295,7 +295,6 @@ jobs:
       - get: concourse-deploy-cloudfoundry
       - get: {{deployment-name}}
         passed: [deploy]
-        trigger: true
     - task: smoke-tests
       config:
         platform: linux
@@ -322,8 +321,7 @@ jobs:
         trigger: true
       - get: concourse-deploy-cloudfoundry
       - get: {{deployment-name}}
-        passed: [smoke-tests]
-        trigger: true
+        passed: [deploy]
     - task: acceptance-tests
       config:
         platform: linux
@@ -348,7 +346,7 @@ jobs:
     - aggregate:
       - get: concourse-deploy-cloudfoundry
       - get: {{deployment-name}}
-        passed: [acceptance-tests]
+        passed: [deploy]
         trigger: true
     - task: push-apps-manager
       config:
