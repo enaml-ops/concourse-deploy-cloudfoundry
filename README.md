@@ -40,21 +40,10 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
     omg-linux deploy-product ert-1-8-linux --help
     ```
 
-1. Edit `setup/setup-vault.sh` 
-    This file is used to populate the proper hashes with your previously defined
-    vault config files.
-
 1. Edit `setup/(oss|pcf)-pipeline-vars.yml`
     These files are the open source and pcf equivalents of each other. Choose
     which type of deployment you would like and complete the values for your
     environment
-
-1. Load your values into vault
-    run the following to load your values into vault
-
-    ```
-    ./setup/setup-vault.sh
-    ```
 
 1. Create or update the pipeline, either opensource or PCF.
 
@@ -66,6 +55,7 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 
     ```
     fly -t CF-Concourse set-pipeline -p deploy-pcf-ert-1.8 -c ci/pcf-pipeline.yml -l setup/pcf-pipeline-vars.yml --var "vault-json-string=$(cat setup/deployment-props.json)"
+    fly -t CF-Concourse trigger-job -j deploy-pcf-ert-1.8/load-vault-properties -w
     ```
 
 1. Delete or move `setup/*` to a secure location.
@@ -75,7 +65,6 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 1. Trigger the deployment job and observe the output.
 
     ```
-    fly -t TARGET trigger-job -j deploy-pcf/get-product-version -w
     fly -t TARGET trigger-job -j deploy-pcf/deploy -w
     ```
 
