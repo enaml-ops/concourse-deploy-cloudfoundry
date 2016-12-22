@@ -18,7 +18,6 @@ groups:
   - load-vault-properties
 - name: deploy
   jobs:
-  - populate-or-rotate-vault
   - get-product-version
   - deploy
 - name: tests
