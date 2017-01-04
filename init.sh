@@ -10,7 +10,7 @@ fi
 
 if [ ! -f setup/oss-pipeline-vars.yml ]; then
   echo "Creating setup/oss-pipeline-vars.yml"
-  cp samples/oss-pipeline-vars.yml setup/oss-pipeline-vars.yml
+  cp samples/oss-pipeline-vars-template.yml setup/oss-pipeline-vars.yml
 fi
 
 if [ ! -f setup/pcf-pipeline-vars.yml ]; then
