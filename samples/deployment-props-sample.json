@@ -37,8 +37,8 @@
   "nfs-disk-type": "51200",
   "nfs-ip": "",
   "nfs-vm-type": "large",
-  "router-ip": ""
+  "router-ip": "",
   "router-vm-type": "large",
   "system-domain": "",
-  "uaa-vm-type": "large",
+  "uaa-vm-type": "large"
 }
