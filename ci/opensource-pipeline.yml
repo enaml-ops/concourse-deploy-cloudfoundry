@@ -75,7 +75,7 @@ resources:
     ca_cert: {{bosh-cacert}}
     client_id: {{bosh-client-id}}
     client_secret: {{bosh-client-secret}}
-    deployment: cf
+    deployment: {{deployment-name}}
     target: {{bosh-url}}
 - name: slack
   type: slack-notification

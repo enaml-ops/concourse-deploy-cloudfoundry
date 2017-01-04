@@ -71,7 +71,7 @@ resources:
     ca_cert: {{bosh-cacert}}
     client_id: {{bosh-client-id}}
     client_secret: {{bosh-client-secret}}
-    deployment: cf
+    deployment: {{deployment-name}}
     target: {{bosh-url}}
 - name: stemcells
   type: pivnet
@@ -307,7 +307,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: smoke-tests
           BOSH_TARGET: {{bosh-url}}
         inputs:
@@ -334,7 +334,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: acceptance-tests
           BOSH_TARGET: {{bosh-url}}
         inputs:
@@ -360,7 +360,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: push-apps-manager
           BOSH_TARGET: {{bosh-url}}
         inputs:
@@ -386,7 +386,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: notifications
           BOSH_TARGET: {{bosh-url}}
         inputs:
@@ -412,7 +412,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: notifications-ui
           BOSH_TARGET: {{bosh-url}}
         inputs:
@@ -438,7 +438,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: autoscaling
           BOSH_TARGET: {{bosh-url}}
         inputs:
@@ -464,7 +464,7 @@ jobs:
           BOSH_CACERT: {{bosh-cacert}}
           BOSH_CLIENT: {{bosh-client-id}}
           BOSH_CLIENT_SECRET: {{bosh-client-secret}}
-          BOSH_DEPLOYMENT_NAME: cf
+          BOSH_DEPLOYMENT_NAME: {{deployment-name}}
           BOSH_ERRAND: autoscaling-register-broker
           BOSH_TARGET: {{bosh-url}}
         inputs:

@@ -49,12 +49,14 @@ Deploy Cloud Foundry with [omg](https://github.com/enaml-ops) in a Concourse pip
 
     ```
     fly -t CF-Concourse set-pipeline -p deploy-oss-cloudfoundry -c ci/opensource-pipeline.yml -l setup/oss-pipeline-vars.yml --var "vault-json-string=$(cat setup/deployment-props.json)"
+    fly -t CF-Concourse unpause-pipeline -p deploy-pcf-ert-1.8
     ```
 
     _or_
 
     ```
     fly -t CF-Concourse set-pipeline -p deploy-pcf-ert-1.8 -c ci/pcf-pipeline.yml -l setup/pcf-pipeline-vars.yml --var "vault-json-string=$(cat setup/deployment-props.json)"
+    fly -t CF-Concourse unpause-pipeline -p deploy-pcf-ert-1.8
     fly -t CF-Concourse trigger-job -j deploy-pcf-ert-1.8/load-vault-properties -w
     ```
 
