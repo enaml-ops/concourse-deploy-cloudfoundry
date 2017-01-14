@@ -6,12 +6,7 @@ omg-cli/omg-linux register-plugin \
   -type product \
   -pluginpath ert-plugin/$PRODUCT_PLUGIN
 
-ALLOW_APP_SSH_ACCESS=$(vault read -field=allow-app-ssh-access $VAULT_HASH_MISC)
 SKIP_HAPROXY=$(vault read -field=skip-haproxy $VAULT_HASH_MISC)
-
-if [[ $ALLOW_APP_SSH_ACCESS == "true" ]]; then
-  SSH_FLAG="--allow-app-ssh-access=true"
-fi
 
 if [[ $SKIP_HAPROXY == "false" ]]; then
   HAPROXY_FLAG="--skip-haproxy=false"
@@ -25,7 +20,6 @@ omg-cli/omg-linux deploy-product \
   --print-manifest \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
-  $SSH_FLAG \
   $HAPROXY_FLAG \
   --infer-from-cloud \
   --stemcell-version $STEMCELL_VERSION \
