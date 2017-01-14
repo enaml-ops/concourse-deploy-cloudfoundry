@@ -4,7 +4,7 @@ chmod +x omg-cli/omg-linux
 
 omg-cli/omg-linux register-plugin \
   -type product \
-  -pluginpath ert-plugin/$PRODUCT_PLUGIN
+  -pluginpath omg-product-bundle/$PRODUCT_PLUGIN
 
 SKIP_HAPROXY=$(vault read -field=skip-haproxy $VAULT_HASH_MISC)
 
@@ -31,3 +31,6 @@ omg-cli/omg-linux deploy-product \
   --vault-hash-misc $VAULT_HASH_MISC \
   --vault-hash-password $VAULT_HASH_PASSWORD \
   --vault-token $VAULT_TOKEN > manifest/deployment.yml
+
+  #eof
+  
