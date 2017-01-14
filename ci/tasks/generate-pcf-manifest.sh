@@ -6,6 +6,12 @@ omg-cli/omg-linux register-plugin \
   -type product \
   -pluginpath ert-plugin/$PRODUCT_PLUGIN
 
+UAA_LDAP_ENABLED=$(vault read -field=uaa-ldap-enabled $VAULT_HASH_MISC)
+
+if [[ $UAA_LDAP_ENABLED == "true" ]]; then
+  UAA_LDAP_ENABLED_FLAG="--uaa-ldap-enabled=true"
+fi
+
 if [[ $SKIP_HAPROXY == "false" ]]; then
   HAPROXY_FLAG="--skip-haproxy=false"
 fi
@@ -19,6 +25,7 @@ omg-cli/omg-linux deploy-product \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
   $HAPROXY_FLAG \
+  $UAA_LDAP_ENABLED_FLAG \
   --infer-from-cloud \
   --stemcell-version $STEMCELL_VERSION \
   --vault-active \

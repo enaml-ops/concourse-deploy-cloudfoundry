@@ -40,5 +40,11 @@
   "router-ip": "",
   "router-vm-type": "large",
   "system-domain": "",
-  "uaa-vm-type": "large"
+  "uaa-vm-type": "large",
+  "uaa-ldap-enabled": "false",
+  "uaa-ldap-url": "",
+  "uaa-ldap-user-dn": "",
+  "uaa-ldap-search-base": "",
+  "uaa-ldap-search-filter": "",
+  "uaa-ldap-mail-attributename": "",
 }
