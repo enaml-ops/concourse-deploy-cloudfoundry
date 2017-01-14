@@ -42,9 +42,9 @@
   "system-domain": "",
   "uaa-vm-type": "large",
   "uaa-ldap-enabled": "false",
-  "uaa-ldap-url": "",
+  "uaa-ldap-url": "ldap://",
   "uaa-ldap-user-dn": "",
   "uaa-ldap-search-base": "",
-  "uaa-ldap-search-filter": "",
-  "uaa-ldap-mail-attributename": "",
+  "uaa-ldap-search-filter": "cn={0}",
+  "uaa-ldap-mail-attributename": "mail"
 }
