@@ -6,6 +6,8 @@ omg-cli/omg-linux register-plugin \
   -type product \
   -pluginpath omg-product-bundle/$PRODUCT_PLUGIN
 
+SKIP_HAPROXY=$(vault read -field=skip-haproxy $VAULT_HASH_MISC)
+
 if [[ $SKIP_HAPROXY == "false" ]]; then
   HAPROXY_FLAG="--skip-haproxy=false"
 fi
@@ -30,4 +32,5 @@ omg-cli/omg-linux deploy-product \
   --vault-hash-password $VAULT_HASH_PASSWORD \
   --vault-token $VAULT_TOKEN > manifest/deployment.yml
 
-#eof
+  #eof
+  

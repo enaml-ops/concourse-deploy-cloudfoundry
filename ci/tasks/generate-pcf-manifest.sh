@@ -7,9 +7,15 @@ omg-cli/omg-linux register-plugin \
   -pluginpath ert-plugin/$PRODUCT_PLUGIN
 
 UAA_LDAP_ENABLED=$(vault read -field=uaa-ldap-enabled $VAULT_HASH_MISC)
+ALLOW_APP_SSH_ACCESS=$(vault read -field=allow-app-ssh-access $VAULT_HASH_MISC)
+SKIP_HAPROXY=$(vault read -field=skip-haproxy $VAULT_HASH_MISC)
 
 if [[ $UAA_LDAP_ENABLED == "true" ]]; then
   UAA_LDAP_ENABLED_FLAG="--uaa-ldap-enabled=true"
+fi
+
+if [[ $ALLOW_APP_SSH_ACCESS == "true" ]]; then
+  SSH_FLAG="--allow-app-ssh-access=true"
 fi
 
 if [[ $SKIP_HAPROXY == "false" ]]; then
@@ -24,6 +30,7 @@ omg-cli/omg-linux deploy-product \
   --print-manifest \
   --ssl-ignore \
   $PRODUCT_PLUGIN \
+  $SSH_FLAG \
   $HAPROXY_FLAG \
   $UAA_LDAP_ENABLED_FLAG \
   --infer-from-cloud \

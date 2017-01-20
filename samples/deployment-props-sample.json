@@ -1,5 +1,4 @@
 {
-  "allow-app-ssh-access": "true",
   "app-domain": "",
   "bosh-port": "25555",
   "bosh-url": "https://x.x.x.x",
@@ -46,5 +45,7 @@
   "uaa-ldap-user-dn": "",
   "uaa-ldap-search-base": "",
   "uaa-ldap-search-filter": "cn={0}",
-  "uaa-ldap-mail-attributename": "mail"
+  "uaa-ldap-mail-attributename": "mail",
+  "skip-haproxy": "false",
+  "allow-app-ssh-access": "true"
 }
