@@ -1,5 +1,4 @@
 {
-  "allow-app-ssh-access": "true",
   "app-domain": "",
   "bosh-port": "25555",
   "bosh-url": "https://x.x.x.x",
@@ -40,5 +39,7 @@
   "router-ip": "",
   "router-vm-type": "large",
   "system-domain": "",
-  "uaa-vm-type": "large"
+  "uaa-vm-type": "large",
+  "skip-haproxy": "false",
+  "allow-app-ssh-access": "true"
 }
